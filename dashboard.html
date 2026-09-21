@@ -335,6 +335,20 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 
+/* ===== PI $1/$3/$5/$10 목표 달성 알림 ===== */
+.pi-goal-alert{position:fixed;top:16px;left:50%;z-index:9500;
+  padding:14px 28px;border-radius:14px;max-width:92vw;text-align:center;
+  background:linear-gradient(135deg,rgba(255,215,0,0.24),rgba(0,212,255,0.12));
+  border:1.5px solid rgba(255,215,0,0.6);
+  box-shadow:0 0 40px rgba(255,215,0,0.35),0 8px 30px rgba(0,0,0,0.55);
+  backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  color:var(--gold);font-size:15px;font-weight:800;letter-spacing:.5px;
+  opacity:0;pointer-events:none;transform:translateX(-50%) translateY(-140%);
+  transition:transform .5s cubic-bezier(.34,1.4,.64,1),opacity .5s}
+.pi-goal-alert.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.pi-goal-alert .sub{display:block;margin-top:4px;font-size:10px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.6)}
+.intel-ready-row.achieved .track{box-shadow:0 0 10px rgba(255,215,0,.45)}
+
 
 /* ===== Pi 로드맵 섹션 ===== */
 .roadmap-section{margin-top:13px}
@@ -1834,6 +1848,12 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
 <!-- ===== 저장 완료 토스트 ===== -->
 <div class="toast" id="toast">✅ 저장 완료! 대시보드 업데이트됨</div>
 
+<!-- ===== PI $1/$3/$5/$10 목표 달성 알림 ===== -->
+<div class="pi-goal-alert" id="piGoalAlert">
+  <span id="piGoalAlertMsg">🎉 PI 목표 달성!</span>
+  <span class="sub" id="piGoalAlertSub"></span>
+</div>
+
 <!-- ===== AI 도구 상세 팝업 ===== -->
 <div class="ai-pop-ov" id="aiPopOv" onclick="if(event.target===this)closeAIPop()">
   <div class="ai-pop-box">
@@ -2769,10 +2789,12 @@ function renderIntelPanel(){
     const readyBox = document.getElementById('intelReadyList');
     if (readyBox) readyBox.innerHTML = INTEL_READY.map(r=>{
       const pct = Math.min(100, Math.max(2, (S.piUsd / r.usd) * 100));
-      const col = pct>=100 ? 'var(--green)' : (pct>=40 ? 'var(--gold)' : 'var(--orange)');
-      return `<div class="intel-ready-row">
+      const achievedAt = PI_GOAL_ACHIEVED[r.usd];
+      const col = achievedAt ? 'var(--gold)' : (pct>=100 ? 'var(--green)' : (pct>=40 ? 'var(--gold)' : 'var(--orange)'));
+      const label = achievedAt ? `✅ 달성 (${jbRel(new Date(achievedAt))})` : pct.toFixed(1)+'%';
+      return `<div class="intel-ready-row${achievedAt?' achieved':''}">
         <div class="intel-ready-hd"><span style="color:rgba(255,255,255,.5)">${r.k} 목표</span>
-          <span style="font-family:monospace;color:${col}">${pct.toFixed(1)}%</span></div>
+          <span style="font-family:monospace;color:${col}">${label}</span></div>
         <div class="track"><div class="bar" style="width:${pct}%;background:${col}"></div></div>
       </div>`;
     }).join('');
@@ -2781,8 +2803,68 @@ function renderIntelPanel(){
   }catch(e){}
 }
 
+/* ================================================================
+   PI $1/$3/$5/$10 목표 달성 자동 알림
+   ================================================================ */
+const PI_GOAL_KEY = 'piGoalAchieved_v1';
+function piGoalLoad(){
+  try{ return JSON.parse(localStorage.getItem(PI_GOAL_KEY)) || {}; }catch(e){ return {}; }
+}
+function piGoalSave(){
+  try{ localStorage.setItem(PI_GOAL_KEY, JSON.stringify(PI_GOAL_ACHIEVED)); }catch(e){}
+}
+const PI_GOAL_ACHIEVED = piGoalLoad();
+
+function requestPiGoalNotifyPermission(){
+  try{
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default'){
+      Notification.requestPermission();
+    }
+  }catch(e){}
+}
+
+function showPiGoalAlert(usd){
+  try{
+    const el = document.getElementById('piGoalAlert');
+    const msg = document.getElementById('piGoalAlertMsg');
+    const sub = document.getElementById('piGoalAlertSub');
+    if (!el) return;
+    if (msg) msg.textContent = `🎉 PI $${usd} 목표 달성!`;
+    if (sub) sub.textContent = `현재가 $${S.piUsd.toFixed(4)} · ${new Date().toLocaleString('ko-KR')}`;
+    el.classList.add('show');
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(()=>el.classList.remove('show'), 9000);
+  }catch(e){}
+}
+
+function notifyPiGoal(usd){
+  try{
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted'){
+      new Notification(`🎉 PI $${usd} 달성!`, {
+        body: `현재가 $${S.piUsd.toFixed(4)} — Pi 목표가 도달`,
+      });
+    }
+  }catch(e){}
+}
+
+function checkPiGoals(){
+  try{
+    INTEL_READY.forEach(r=>{
+      if (S.piUsd >= r.usd && !PI_GOAL_ACHIEVED[r.usd]){
+        PI_GOAL_ACHIEVED[r.usd] = new Date().toISOString();
+        piGoalSave();
+        showPiGoalAlert(r.usd);
+        notifyPiGoal(r.usd);
+        intelLog(`🎉 PI ${r.k} 목표 달성! (현재가 $${S.piUsd.toFixed(4)})`);
+        renderIntelLog();
+      }
+    });
+  }catch(e){}
+}
+
 function renderIntelReadiness(){
   try{
+    checkPiGoals();
     renderIntelPanel();
   }catch(e){}
 }
@@ -3557,8 +3639,9 @@ document.addEventListener('keydown', e => {
     fetchKRWRate();                   // 환율 초기 로드
     setInterval(fetchKRWRate, 30000); // 30초마다 환율 갱신
     renderIntelPanel();                    // 전략 인텔리전스 초기 렌더
-    renderIntelReadiness();                // 실시간가 기준 Readiness 반영
-    setInterval(renderIntelReadiness, 5000); // 5초마다 실시간가 동기화
+    renderIntelReadiness();                // 실시간가 기준 Readiness 반영 + 목표달성 체크
+    setInterval(renderIntelReadiness, 5000); // 5초마다 실시간가 동기화 + 목표달성 체크
+    requestPiGoalNotifyPermission();         // 목표달성 브라우저 알림 권한 요청
     setTimeout(fetchIntelCheck, 3000);       // 로드 직후 실시간 뉴스 체크
     setInterval(fetchIntelCheck, 1800000);   // 30분마다 자동 재확인
     startAssetPulse();          // 에셋 펄스 시작
