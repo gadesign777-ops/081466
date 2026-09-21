@@ -1510,7 +1510,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:13px">
       <!-- 7 Economic KPIs -->
       <div>
-        <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin-bottom:6px">7대 경제 KPI — 데일리 체크리스트</div>
+        <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin-bottom:6px">7대 경제 KPI — 실시간 체크 + 데일리 확정</div>
         <div id="intelKpiList"></div>
       </div>
       <!-- Readiness framework -->
@@ -1989,6 +1989,7 @@ const S = {
   mktCap: null,
   vol24h: null,
   mktSrc: '—',
+  circSupply: null,
 };
 
 /* ================================================================
@@ -2607,13 +2608,13 @@ const INTEL_PI = [
 const INTEL_TRUST = ['rumor','interp','signal','fact'];
 const INTEL_TRUST_LABEL = {rumor:'미확인 루머', interp:'해석·추정', signal:'신뢰 신호', fact:'확인된 사실'};
 const INTEL_KPI = [
-  'Mainnet 활성 사용자 (거래·앱 사용 기준)',
-  'DEX/AMM 거래량 · Liquidity',
-  'Pi 앱 결제 및 매출',
-  'PiVerify 외부 고객 · 매출',
-  'SoloHost · Node Compute 외부 workload',
-  'Migration/Unlock (유통량 증가)',
-  '거래소 유동성 (Kraken 등)',
+  {nm:'Mainnet 활성 사용자 (거래·앱 사용 기준)',        q:'"Pi Network" active users mainnet'},
+  {nm:'DEX/AMM 거래량 · Liquidity',                     q:'"Pi Network" DEX volume liquidity'},
+  {nm:'Pi 앱 결제 및 매출',                              q:'"Pi Network" app payments revenue'},
+  {nm:'PiVerify 외부 고객 · 매출',                       q:'"Pi Network" PiVerify customers revenue'},
+  {nm:'SoloHost · Node Compute 외부 workload',           q:'"Pi Network" SoloHost "Node Compute" workload'},
+  {nm:'Migration/Unlock (유통량 증가)',                  live:'supply'},
+  {nm:'거래소 유동성 (Kraken 등)',                       live:'volume'},
 ];
 const INTEL_KPI_OPTS = ['공개 데이터 없음','달성','부분달성','후퇴'];
 const INTEL_READY = [
@@ -2675,7 +2676,11 @@ function intelSetTrust(group, key, trust){
 
 function intelSetKpi(i, val){
   try{
-    INTEL_STATE.kpi[i] = {status: val, at: new Date().toISOString()};
+    const old = (INTEL_STATE.kpi[i] && INTEL_STATE.kpi[i].status) || '공개 데이터 없음';
+    INTEL_STATE.kpi[i] = INTEL_STATE.kpi[i] || {};
+    INTEL_STATE.kpi[i].status = val;
+    INTEL_STATE.kpi[i].at = new Date().toISOString();
+    if (val !== old) { intelLog(`${INTEL_KPI[i].nm}: ${old} → ${val} (수동 조정)`); renderIntelLog(); }
     intelSave();
   }catch(e){}
 }
@@ -2730,11 +2735,35 @@ function renderIntelPanel(){
     renderIntelLog();
 
     const kpiBox = document.getElementById('intelKpiList');
-    if (kpiBox) kpiBox.innerHTML = INTEL_KPI.map((nm,i)=>{
-      const cur = (INTEL_STATE.kpi[i] && INTEL_STATE.kpi[i].status) || '공개 데이터 없음';
+    if (kpiBox) kpiBox.innerHTML = INTEL_KPI.map((k,i)=>{
+      const st = INTEL_STATE.kpi[i] || {};
+      const cur = st.status || '공개 데이터 없음';
       const opts = INTEL_KPI_OPTS.map(o=>`<option ${o===cur?'selected':''}>${o}</option>`).join('');
-      return `<div class="intel-kpi-row"><span class="intel-kpi-nm">${nm}</span>
-        <select class="intel-kpi-sel" onchange="intelSetKpi(${i},this.value)">${opts}</select></div>`;
+      let live;
+      if (k.live === 'volume') {
+        live = (S.vol24h!=null)
+          ? `📡 실시간 24h 거래량: $${Math.round(S.vol24h).toLocaleString()} (${S.mktSrc||S.src||'—'})`
+          : '📡 실시간 거래량 데이터 아직 없음';
+      } else if (k.live === 'supply') {
+        const v = S.circSupply!=null ? S.circSupply : st.curSupply;
+        if (v!=null) {
+          const diff = (st.prevSupply!=null && v>st.prevSupply) ? ` (전회 대비 +${Math.round(v-st.prevSupply).toLocaleString()}π)` : '';
+          live = `📡 실시간 유통량: ${Math.round(v).toLocaleString()}π${diff}`;
+        } else live = '📡 실시간 유통량 데이터 아직 없음';
+      } else {
+        live = st.headline
+          ? `🔎 <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
+          : '최근 30일 내 감지된 공개 신호 없음';
+      }
+      const chk = st.checkedAt ? '확인 ' + jbRel(new Date(st.checkedAt)) : '아직 미체크';
+      return `<div class="intel-kpi-row" style="flex-direction:column;align-items:stretch">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="intel-kpi-nm">${k.nm}</span>
+          <select class="intel-kpi-sel" onchange="intelSetKpi(${i},this.value)">${opts}</select>
+        </div>
+        <div class="intel-sig" style="min-height:auto;margin-top:4px">${live}</div>
+        <div class="intel-chk">${chk}</div>
+      </div>`;
     }).join('');
 
     const readyBox = document.getElementById('intelReadyList');
@@ -2775,16 +2804,60 @@ async function intelCheckOne(item, group){
   }catch(e){}
 }
 
+async function fetchCircSupply(){
+  try{
+    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=pi-network',
+      {signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined});
+    if (r.ok){
+      const d = await r.json();
+      const c = d && d[0];
+      if (c && c.circulating_supply > 0) S.circSupply = c.circulating_supply;
+    }
+  }catch(e){}
+}
+
+async function intelCheckKpiOne(i){
+  try{
+    const k = INTEL_KPI[i];
+    INTEL_STATE.kpi[i] = INTEL_STATE.kpi[i] || {};
+    if (k.live === 'volume'){
+      INTEL_STATE.kpi[i].checkedAt = new Date().toISOString();
+      return;
+    }
+    if (k.live === 'supply'){
+      if (S.circSupply != null){
+        const prev = INTEL_STATE.kpi[i].curSupply;
+        if (prev != null && prev !== S.circSupply) INTEL_STATE.kpi[i].prevSupply = prev;
+        INTEL_STATE.kpi[i].curSupply = S.circSupply;
+      }
+      INTEL_STATE.kpi[i].checkedAt = new Date().toISOString();
+      return;
+    }
+    const url = 'https://news.google.com/rss/search?q=' + encodeURIComponent(k.q) + '&hl=en-US&gl=US&ceid=US:en';
+    const items = await jbFeed(url);
+    const fresh = items.filter(x=>!isNaN(x.d) && (Date.now()-x.d) <= JB_MAX_AGE)
+                        .sort((a,b)=>b.d-a.d)[0];
+    INTEL_STATE.kpi[i].checkedAt = new Date().toISOString();
+    if (fresh && fresh.l !== INTEL_STATE.kpi[i].link){
+      INTEL_STATE.kpi[i].headline = fresh.t.replace(/</g,'&lt;');
+      INTEL_STATE.kpi[i].link = fresh.l;
+      intelLog(`🆕 ${k.nm}: 신규 신호 감지 — "${fresh.t.replace(/</g,'&lt;')}"`);
+    }
+  }catch(e){}
+}
+
 async function fetchIntelCheck(){
   const btn = document.getElementById('intelRfBtn');
   const status = document.getElementById('intelStatus');
   if (btn) { btn.innerHTML = '<span class="spin">↻</span> 체크 중...'; btn.disabled = true; }
   if (status) status.textContent = '● 실시간 체크 중';
   try{
+    await fetchCircSupply();
     await Promise.allSettled([
       ...INTEL_AI.map(x=>intelCheckOne(x,'ai')),
       ...INTEL_STRAT.map(x=>intelCheckOne(x,'strat')),
       ...INTEL_PI.map(x=>intelCheckOne(x,'pi')),
+      ...INTEL_KPI.map((k,i)=>intelCheckKpiOne(i)),
     ]);
     INTEL_STATE.lastCheck = new Date().toISOString();
     intelSave();
