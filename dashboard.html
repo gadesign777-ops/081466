@@ -488,6 +488,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .intel-ready-row{margin-bottom:9px}
 .intel-ready-hd{display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px}
 .intel-lvleg{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:8px;color:rgba(255,255,255,0.35);align-items:center}
+.intel-founder{padding:9px 11px;margin-bottom:11px;background:rgba(255,215,0,0.04);
+  border:1px solid rgba(255,215,0,0.16);border-left:3px solid var(--gold);
+  border-radius:0 8px 8px 0;font-size:10px;line-height:1.7;color:rgba(255,240,200,0.85)}
+.intel-founder b{color:var(--gold)}
+.intel-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.intel-trust-rumor{color:#ff6b6b !important}
+.intel-trust-interp{color:var(--neon) !important}
+.intel-trust-signal{color:var(--gold) !important}
+.intel-trust-fact{color:var(--green) !important}
+.intel-log{max-height:150px;overflow-y:auto;margin-top:6px}
+.intel-log-row{display:flex;gap:8px;padding:4px 2px;font-size:9px;border-bottom:1px dashed rgba(255,255,255,0.06);color:rgba(220,240,255,0.7)}
+.intel-log-t{flex-shrink:0;color:rgba(255,255,255,0.3);font-family:monospace;font-size:8px;width:56px}
+.intel-src-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.intel-src-link{font-size:9px;color:rgba(0,212,255,0.6);text-decoration:none;padding:3px 8px;
+  background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:5px}
+.intel-src-link:hover{background:rgba(0,212,255,0.12)}
+.intel-src-plain{font-size:9px;color:rgba(255,255,255,0.3);padding:3px 8px}
 
 
 /* ===== AI 통합 사령부 조직도 ===== */
@@ -1480,6 +1497,13 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       <span id="intelKrakenSrc" style="color:rgba(255,255,255,0.35)">(—)</span>로 자동 추적 중. 이후 관찰항목은 '상장 여부'가 아니라 거래량·유동성·스프레드다.
     </div>
 
+    <!-- Founders' Endgame -->
+    <div class="intel-founder">
+      🎯 <b>Founders' Endgame</b> — Dr. Nicolas Kokkalis(분산시스템·Node·컴퓨팅 인프라 축) + Dr. Chengdiao Fan(인간 참여·신원·기여·보상 축).
+      종합 관찰가설: 단순 코인 가격 상승이 아니라 <b>검증된 인간·기업·AI·컴퓨팅 자원의 실제 생산을 블록체인 경제망에 연결</b>하고
+      PI를 교환·보상·조정 수단으로 쓰는 글로벌 경제 인프라 구축 — 이는 종합 해석이며 개별 요소는 공식 제품·발언으로 계속 검증 필요.
+    </div>
+
     <!-- AI Contact Watch -->
     <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin-bottom:2px">AI CONTACT WATCH — 공식 파트너십 미확인 · 기술 접점만 상시 감시</div>
     <div class="intel-grid" id="intelAiGrid"></div>
@@ -1487,6 +1511,10 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <!-- Strategic Contact Watch -->
     <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:12px 0 2px">STRATEGIC CONTACT WATCH — Consensus Miami · Stanford Network</div>
     <div class="intel-grid-2" id="intelStratGrid"></div>
+
+    <!-- Pi AI/Compute 접점 -->
+    <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:12px 0 2px">PI AI/COMPUTE 접점 — SoloHost · PiVerify · Node Compute</div>
+    <div class="intel-grid-3" id="intelPiGrid"></div>
 
     <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:13px">
       <!-- 7 Economic KPIs -->
@@ -1501,6 +1529,10 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       </div>
     </div>
 
+    <!-- 신호 변경 이력 -->
+    <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:13px 0 2px">신호 변경 이력 — 전일 대비 새 변화 우선 기록</div>
+    <div class="intel-log" id="intelLogList"></div>
+
     <div class="intel-lvleg">
       <span>Evidence Level:</span>
       <span class="intel-lv intel-lv0">Lv0 Rumor</span>
@@ -1510,6 +1542,23 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       <span class="intel-lv intel-lv4">Lv4 Official</span>
       <span class="intel-lv intel-lv5">Lv5 Economic</span>
     </div>
+    <div class="intel-lvleg" style="margin-top:4px">
+      <span>신뢰도:</span>
+      <span class="intel-trust-rumor">미확인 루머</span>
+      <span class="intel-trust-interp">해석·추정</span>
+      <span class="intel-trust-signal">신뢰 신호</span>
+      <span class="intel-trust-fact">확인된 사실</span>
+    </div>
+
+    <!-- Source Notes -->
+    <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:13px 0 2px">SOURCE NOTES</div>
+    <div class="intel-src-row">
+      <a class="intel-src-link" href="https://blog.kraken.com/" target="_blank" rel="noopener">⬡ Kraken Blog — "PI is available for trading!" (2026-03-13)</a>
+      <a class="intel-src-link" href="https://www.kraken.com/" target="_blank" rel="noopener">⬡ Kraken — PI 시장/거래 페이지</a>
+      <a class="intel-src-link" href="https://minepi.com/blog/" target="_blank" rel="noopener">⬡ Pi 공식 블로그 — SoloHost Updates (Pi Desktop 0.6.3, 2026-09-09)</a>
+      <span class="intel-src-plain">📄 창립자/로드맵/Pi2Day/Ventures/OpenMind 자료 — 비공개 리서치 원자료 (링크 없음)</span>
+    </div>
+
     <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:9px;text-align:right">Daily Report Operating Standard: 전일 대비 변화 우선 표시 · Confirmed Fact/Credible Signal/Interpretation/Unverified Rumor 4단계 분류 · 공개 데이터 없으면 추정치를 사실처럼 채우지 않음</div>
   <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
 </div>
@@ -2559,6 +2608,13 @@ const INTEL_STRAT = [
   {key:'miami',    nm:'Consensus Miami (XDC 등 기관 네트워킹)',  en:'Strategic Contact', q:'"Pi Network" Consensus Miami'},
   {key:'stanford', nm:'Stanford Network (창립자·OpenMind 연결)', en:'Ecosystem Contact', q:'"Pi Network" Stanford'},
 ];
+const INTEL_PI = [
+  {key:'solohost',    nm:'SoloHost (로컬 AI 앱 플랫폼)',       en:'Pi Desktop 0.6.3 · 2026-09-09', q:'"Pi Network" SoloHost'},
+  {key:'piverify',    nm:'PiVerify / Sign-in (외부 KYC 개방)', en:'1,800만+ KYC 인프라',           q:'"Pi Network" PiVerify'},
+  {key:'nodecompute', nm:'Node Compute (외부 workload PoC)',  en:'OpenMind 투자 연계',             q:'"Pi Network" "Node Compute" OpenMind'},
+];
+const INTEL_TRUST = ['rumor','interp','signal','fact'];
+const INTEL_TRUST_LABEL = {rumor:'미확인 루머', interp:'해석·추정', signal:'신뢰 신호', fact:'확인된 사실'};
 const INTEL_KPI = [
   'Mainnet 활성 사용자 (거래·앱 사용 기준)',
   'DEX/AMM 거래량 · Liquidity',
@@ -2579,19 +2635,48 @@ const INTEL_READY = [
 function intelLoad(){
   try{
     const raw = localStorage.getItem('piIntelState_v1');
-    return raw ? JSON.parse(raw) : {ai:{}, strat:{}, kpi:{}, lastCheck:null};
-  }catch(e){ return {ai:{}, strat:{}, kpi:{}, lastCheck:null}; }
+    return raw ? JSON.parse(raw) : {ai:{}, strat:{}, pi:{}, kpi:{}, log:[], lastCheck:null};
+  }catch(e){ return {ai:{}, strat:{}, pi:{}, kpi:{}, log:[], lastCheck:null}; }
 }
 function intelSave(){
   try{ localStorage.setItem('piIntelState_v1', JSON.stringify(INTEL_STATE)); }catch(e){}
 }
 const INTEL_STATE = intelLoad();
+if (!INTEL_STATE.pi) INTEL_STATE.pi = {};
+if (!INTEL_STATE.log) INTEL_STATE.log = [];
+
+function intelFindItem(group, key){
+  const list = group==='ai' ? INTEL_AI : group==='strat' ? INTEL_STRAT : INTEL_PI;
+  return (list.find(x=>x.key===key) || {}).nm || key;
+}
+
+function intelLog(msg){
+  try{
+    INTEL_STATE.log.unshift({ts: new Date().toISOString(), msg});
+    INTEL_STATE.log = INTEL_STATE.log.slice(0, 30);
+    intelSave();
+  }catch(e){}
+}
 
 function intelSetLevel(group, key, lv){
   try{
     INTEL_STATE[group] = INTEL_STATE[group] || {};
     INTEL_STATE[group][key] = INTEL_STATE[group][key] || {};
+    const old = INTEL_STATE[group][key].lv || 0;
     INTEL_STATE[group][key].lv = Number(lv);
+    if (Number(lv) !== old) intelLog(`${intelFindItem(group,key)}: Evidence Lv${old} → Lv${lv} (수동 조정)`);
+    intelSave();
+    renderIntelPanel();
+  }catch(e){}
+}
+
+function intelSetTrust(group, key, trust){
+  try{
+    INTEL_STATE[group] = INTEL_STATE[group] || {};
+    INTEL_STATE[group][key] = INTEL_STATE[group][key] || {};
+    const old = INTEL_STATE[group][key].trust;
+    INTEL_STATE[group][key].trust = trust;
+    if (trust !== old) intelLog(`${intelFindItem(group,key)}: 신뢰도 → ${INTEL_TRUST_LABEL[trust]} (수동 조정)`);
     intelSave();
     renderIntelPanel();
   }catch(e){}
@@ -2607,19 +2692,40 @@ function intelSetKpi(i, val){
 function intelCard(item, group){
   const st = (INTEL_STATE[group] && INTEL_STATE[group][item.key]) || {};
   const lv = st.lv || 0;
+  const trust = st.trust || 'interp';
   const sig = st.headline
     ? `🔎 <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
     : '최근 30일 내 감지된 공개 신호 없음';
   const chk = st.checkedAt ? '확인 ' + jbRel(new Date(st.checkedAt)) : '아직 미체크';
-  const opts = [0,1,2,3,4,5].map(n=>`<option value="${n}" ${n===lv?'selected':''}>Lv${n}</option>`).join('');
+  const lvOpts = [0,1,2,3,4,5].map(n=>`<option value="${n}" ${n===lv?'selected':''}>Lv${n}</option>`).join('');
+  const trustOpts = INTEL_TRUST.map(t=>`<option value="${t}" ${t===trust?'selected':''}>${INTEL_TRUST_LABEL[t]}</option>`).join('');
   return `
     <div class="intel-card">
       <div class="intel-nm">${item.nm}</div>
       <div class="intel-en">${item.en}</div>
-      <select class="intel-kpi-sel" style="margin-top:6px" onchange="intelSetLevel('${group}','${item.key}',this.value)">${opts}</select>
+      <div style="display:flex;gap:4px;margin-top:6px">
+        <select class="intel-kpi-sel" style="flex:1" onchange="intelSetLevel('${group}','${item.key}',this.value)">${lvOpts}</select>
+        <select class="intel-kpi-sel intel-trust-${trust}" style="flex:1" onchange="intelSetTrust('${group}','${item.key}',this.value)">${trustOpts}</select>
+      </div>
       <div class="intel-sig">${sig}</div>
       <div class="intel-chk">${chk}</div>
     </div>`;
+}
+
+function renderIntelLog(){
+  try{
+    const box = document.getElementById('intelLogList');
+    if (!box) return;
+    if (!INTEL_STATE.log.length){
+      box.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:9px;padding:4px 2px">아직 기록된 변경 이력이 없습니다.</div>';
+      return;
+    }
+    box.innerHTML = INTEL_STATE.log.map(e=>`
+      <div class="intel-log-row">
+        <span class="intel-log-t">${jbRel(new Date(e.ts))}</span>
+        <span>${e.msg}</span>
+      </div>`).join('');
+  }catch(e){}
 }
 
 function renderIntelPanel(){
@@ -2628,6 +2734,9 @@ function renderIntelPanel(){
     if (aiBox) aiBox.innerHTML = INTEL_AI.map(x=>intelCard(x,'ai')).join('');
     const stBox = document.getElementById('intelStratGrid');
     if (stBox) stBox.innerHTML = INTEL_STRAT.map(x=>intelCard(x,'strat')).join('');
+    const piBox = document.getElementById('intelPiGrid');
+    if (piBox) piBox.innerHTML = INTEL_PI.map(x=>intelCard(x,'pi')).join('');
+    renderIntelLog();
 
     const kpiBox = document.getElementById('intelKpiList');
     if (kpiBox) kpiBox.innerHTML = INTEL_KPI.map((nm,i)=>{
@@ -2670,9 +2779,10 @@ async function intelCheckOne(item, group){
     INTEL_STATE[group] = INTEL_STATE[group] || {};
     INTEL_STATE[group][item.key] = INTEL_STATE[group][item.key] || {};
     INTEL_STATE[group][item.key].checkedAt = new Date().toISOString();
-    if (fresh){
+    if (fresh && fresh.l !== INTEL_STATE[group][item.key].link){
       INTEL_STATE[group][item.key].headline = fresh.t.replace(/</g,'&lt;');
       INTEL_STATE[group][item.key].link = fresh.l;
+      intelLog(`🆕 ${item.nm}: 신규 신호 감지 — "${fresh.t.replace(/</g,'&lt;')}"`);
     }
   }catch(e){}
 }
@@ -2686,6 +2796,7 @@ async function fetchIntelCheck(){
     await Promise.allSettled([
       ...INTEL_AI.map(x=>intelCheckOne(x,'ai')),
       ...INTEL_STRAT.map(x=>intelCheckOne(x,'strat')),
+      ...INTEL_PI.map(x=>intelCheckOne(x,'pi')),
     ]);
     INTEL_STATE.lastCheck = new Date().toISOString();
     intelSave();
