@@ -460,9 +460,6 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* ===== Pi 전략 인텔리전스 실시간 체크 ===== */
 .intel-section{margin-top:13px}
-.intel-alert{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:9px 12px;margin-bottom:11px;
-  background:rgba(0,232,150,0.06);border:1px solid rgba(0,232,150,0.28);border-left:3px solid var(--green);
-  border-radius:0 8px 8px 0;font-size:10.5px;line-height:1.6;color:rgba(210,255,235,0.9)}
 .intel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
 .intel-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
 .intel-card{padding:9px 10px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.06);
@@ -1489,12 +1486,6 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <button class="pinews-link-btn" id="intelRfBtn" onclick="fetchIntelCheck()">↻ 지금 실시간 체크</button>
         <div class="upd-badge">최종 체크 <span id="intelUpd" style="color:var(--neon)">—</span></div>
       </div>
-    </div>
-
-    <div class="intel-alert">
-      ✅ <strong>정정 반영</strong>: PI는 <strong style="color:var(--gold)">Kraken에 이미 상장</strong> — 2026-03-13부터 거래 live.
-      현재가 <strong id="intelKrakenPx" style="color:#ffe14d;font-family:monospace">$0.0000</strong>
-      <span id="intelKrakenSrc" style="color:rgba(255,255,255,0.35)">(—)</span>로 자동 추적 중. 이후 관찰항목은 '상장 여부'가 아니라 거래량·유동성·스프레드다.
     </div>
 
     <!-- Founders' Endgame -->
@@ -2763,9 +2754,6 @@ function renderIntelPanel(){
 
 function renderIntelReadiness(){
   try{
-    _set('intelKrakenPx', '$' + S.piUsd.toFixed(4));
-    const s = document.getElementById('intelKrakenSrc');
-    if (s) s.textContent = '(' + (S.src||S.mktSrc||'—') + ' 기준)';
     renderIntelPanel();
   }catch(e){}
 }
