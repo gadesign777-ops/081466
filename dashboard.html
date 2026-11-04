@@ -1864,7 +1864,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div class="ai-pop-row"><div class="ai-pop-k">담당 업무</div><div class="ai-pop-v" id="apDuty"></div></div>
     <div class="ai-pop-row"><div class="ai-pop-k">월 비용</div><div class="ai-pop-v"><span class="ai-pop-cost" id="apCost"></span><div class="ai-pop-note" id="apCostNote"></div></div></div>
     <div class="ai-pop-row"><div class="ai-pop-k">활용 팁</div><div class="ai-pop-v" id="apTip" style="color:rgba(255,225,140,0.7);font-size:10px"></div></div>
-    <a class="ai-pop-go" id="apGo" href="file:///C:/Users/82107/Downloads/command-center_%EC%88%98%EC%A0%95%EB%B3%B89_3.html#" target="_blank">🚀 바로가기</a>
+    <a class="ai-pop-go" id="apGo" href="#" target="_blank">🚀 바로가기</a>
   </div>
 </div>
 
@@ -1940,7 +1940,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <tr>
           <td><div class="inp-mil">🪖 원재</div></td>
           <td><input class="inp-f" id="in_pi3" type="number" step="0.001" placeholder="2750"></td>
-          <td><input class="inp-f" id="in_nd3" type="number" step="0.01" placeholder="—" disabled=""></td>
+          <td><input class="inp-f" id="in_nd3" type="number" step="0.01" placeholder="0.00"></td>
           <td><input class="inp-f" id="in_ut3" type="number" step="0.01" placeholder="0.22"></td>
         </tr>
       </tbody>
@@ -3548,7 +3548,7 @@ function saveData() {
   try {
     const nodes = CFG.familyNodes.map((n, i) => {
       const pi  = parseFloat(document.getElementById('in_pi' + i)?.value) || n.pi;
-      const nd  = i !== 3 ? (parseFloat(document.getElementById('in_nd' + i)?.value) || n.node) : null;
+      const nd  = parseFloat(document.getElementById('in_nd' + i)?.value) || n.node;
       const ut  = parseFloat(document.getElementById('in_ut' + i)?.value) || n.util;
       return { pi, node: nd, util: ut };
     });
@@ -3707,7 +3707,7 @@ const _origSaveData = window.saveData;
 window.saveData = function(){
   _origSaveData.apply(this, arguments);
   jxRecord();
-  jxRenderAll();
+  window.jxRenderAll();
 };
 
 /* ---------- 페이스 & 도달예상 ---------- */
@@ -3759,7 +3759,7 @@ function jxDrawChart(){
     labels=labels.slice(1);
     series=JX_NAMES.map((n,m)=>({n, c:JX_COLORS[m], pts:pts[m], bar:true}));
   } else {
-    series=[0,1,2].map(m=>({n:JX_NAMES[m]+' 노드', c:JX_COLORS[m], pts:es.map(e=>e.nodes[m]?.node??null)}));
+    series=[0,1,2,3].map(m=>({n:JX_NAMES[m]+' 노드', c:JX_COLORS[m], pts:es.map(e=>e.nodes[m]?.node??null)}));
   }
 
   const all=series.flatMap(s=>s.pts).filter(v=>v!=null);
@@ -3909,7 +3909,7 @@ window.jxExportXlsx = async function(){
       const r={날짜:e.date};
       JX_NAMES.forEach((n,m)=>{
         const v=e.nodes[m]||{};
-        r[n+'(π)']=v.pi??''; if(m<3) r[n+'_노드']=v.node??''; r[n+'_유틸']=v.util??'';
+        r[n+'(π)']=v.pi??''; r[n+'_노드']=v.node??''; r[n+'_유틸']=v.util??'';
       });
       r['가족합계(π)']=e.total; r['활용가능(π)']=e.avail;
       r['Pi가격($)']=e.price??''; r['환율(원)']=e.krw??'';
@@ -3984,7 +3984,6 @@ setInterval(()=>{ try{ fetchMarket(); }catch(e){} }, 60000);
 })();
 </script>
 
-<script src="file:///C:/Users/82107/Desktop/AI%20%ED%86%B5%ED%95%A9%20%EC%82%AC%EB%A0%B9%EB%B6%80%20%E2%80%94%20%EB%94%94%EC%A7%80%ED%84%B8%20%EB%85%B8%EB%A7%88%EB%93%9C%20%EC%A0%9C%EA%B5%AD%20Command%20center%20%EC%88%98%EC%A0%95%EB%B3%B89%20fable5%20%C2%B7%20HTML_files/pi-sdk.js.%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C" async=""></script>
 <script>
 /* ================================================================
    ⬡ DAPP MODULE v4 — Pi SDK · 자산예측 · 노드가이드 · 랭킹 · 다국어
@@ -4085,7 +4084,7 @@ function dpRank(){
 function dpNode(){
   const dEl=document.getElementById('dpNodeDiag'), tEl=document.getElementById('dpNodeTips'); if(!dEl) return;
   const H=HISTD(); const l=H[H.length-1];
-  const list=l? [0,1,2].map(m=>({n: LANG_EN?NAMES_EN[m]:NAMES[m], s:l.nodes[m]?.node})).filter(x=>x.s!=null) : [];
+  const list=l? [0,1,2,3].map(m=>({n: LANG_EN?NAMES_EN[m]:NAMES[m], s:l.nodes[m]?.node})).filter(x=>x.s!=null) : [];
   if(!list.length){ dEl.innerHTML=`<div style="color:var(--text-d);font-size:11px">${T('기록된 노드 점수가 없어요','No node scores recorded yet')}</div>`; tEl.innerHTML=''; return; }
   const grade=s=> s>=20?{t:T('최상위','Excellent'),c:'var(--gold)'}:s>=10?{t:T('양호','Good'),c:'var(--green)'}:s>=5?{t:T('보통','Average'),c:'var(--neon)'}:{t:T('개선 필요','Needs work'),c:'var(--orange)'};
   dEl.innerHTML=list.map(x=>{const g=grade(x.s);return `
