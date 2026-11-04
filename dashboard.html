@@ -241,6 +241,14 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .lk-hms{font-size:10px;font-weight:700;font-family:monospace;color:rgba(0,212,255,0.85);
   margin-top:2px;letter-spacing:.5px;text-shadow:0 0 6px rgba(0,212,255,0.3)}
 
+/* ===== 2차 마이그레이션 현황 ===== */
+.mg-pending{opacity:.6}
+.mg-badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:7.5px;font-weight:800;margin-left:6px;vertical-align:middle}
+.mg-badge.done{background:rgba(0,232,150,.12);color:var(--green);border:1px solid rgba(0,232,150,.3)}
+.mg-badge.wait{background:rgba(255,123,46,.12);color:var(--orange);border:1px solid rgba(255,123,46,.3)}
+.mg-badge.none{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1)}
+.mg-est{color:rgba(255,215,0,.65);font-style:italic}
+
 /* Strategy */
 .strat-row{display:flex;justify-content:space-between;align-items:center;
   padding:5px 7px;background:rgba(255,255,255,0.02);border-radius:5px;margin-bottom:4px}
@@ -1220,6 +1228,18 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       </div>
     </div>
 
+    <!-- 2차 마이그레이션 현황 -->
+    <div class="card" style="border-color:rgba(0,212,255,.3);background:rgba(0,10,26,.85)">
+      <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div>
+      <div class="lbl" style="display:flex;justify-content:space-between;align-items:center">
+        📦 2차 마이그레이션 현황
+        <span style="color:rgba(0,232,150,.65);font-size:7.5px;letter-spacing:1.5px;animation:pulse 1.5s infinite">● REALTIME</span>
+      </div>
+      <div id="migrationList"></div>
+      <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:8px;text-align:right">입금 후 약 14일 보류 → 실사용(전송 가능) 전환 · 가족이 알려주는 소식 기준으로 갱신</div>
+    </div>
+
+
     <!-- Hologram News Feed -->
     <div class="card" style="flex:1;border-color:rgba(0,212,255,.2)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
@@ -2092,6 +2112,63 @@ function renderLockups() {
 }
 renderLockups();
 setInterval(renderLockups, 1000);
+
+/* ================================================================
+   2차 마이그레이션 현황 (가족 제보 기반 — 수동 갱신, 실시간 카운트다운)
+   ================================================================ */
+const MIGRATIONS = [
+  {n:'사장님',   icon:'👨‍💼', arrived:'2026-11-02', usable:'2026-11-17T00:00:00+09:00', pi:null, estimated:false},
+  {n:'아내',     icon:'👩‍💼', arrived:null,          usable:null,                        pi:2500, estimated:true},
+  {n:'큰아들',   icon:'💻',   arrived:null,          usable:null,                        pi:null, estimated:false},
+  {n:'작은아들', icon:'🪖',   arrived:null,          usable:null,                        pi:null, estimated:false},
+];
+function renderMigrations(){
+  try{
+    const box = document.getElementById('migrationList');
+    if (!box) return;
+    const now = Date.now();
+    box.innerHTML = MIGRATIONS.map(m=>{
+      if (!m.arrived && m.pi==null){
+        return `<div class="lk-row mg-pending">
+          <div style="text-align:left;min-width:0">
+            <div class="lk-nm">${m.icon} ${m.n}</div>
+            <div class="lk-date">정보 없음</div>
+          </div>
+          <div class="lk-cd"><span class="mg-badge none">미확인</span></div>
+        </div>`;
+      }
+      if (!m.arrived){
+        return `<div class="lk-row mg-pending">
+          <div style="text-align:left;min-width:0">
+            <div class="lk-nm">${m.icon} ${m.n}</div>
+            <div class="lk-date">입금 대기중 · <span class="lk-pi mg-est">예상 약 ${m.pi.toLocaleString()}π</span></div>
+          </div>
+          <div class="lk-cd"><span class="mg-badge wait">⏳ 대기중</span></div>
+        </div>`;
+      }
+      const u = new Date(m.usable).getTime();
+      const done = now >= u;
+      let cd = '';
+      if (!done){
+        const ms = u-now;
+        const d = Math.floor(ms/86400000);
+        const h = String(Math.floor(ms%86400000/3600000)).padStart(2,'0');
+        const mi = String(Math.floor(ms%3600000/60000)).padStart(2,'0');
+        const s = String(Math.floor(ms%60000/1000)).padStart(2,'0');
+        cd = `<div class="lk-d">D-${d}</div><div class="lk-hms">${h}:${mi}:${s}</div>`;
+      }
+      return `<div class="lk-row${done?'':' lk-next'}">
+        <div style="text-align:left;min-width:0">
+          <div class="lk-nm">${m.icon} ${m.n}${done?' <span class="mg-badge done">✅ 실사용 가능</span>':''}</div>
+          <div class="lk-date">입금 ${m.arrived}${m.pi? ' · <span class="lk-pi">'+m.pi.toLocaleString()+'π</span>':''}</div>
+        </div>
+        <div class="lk-cd">${cd}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+renderMigrations();
+setInterval(renderMigrations, 1000);
 
 /* 전체 카드에 HUD 코너 브래킷 자동 부착 (없는 카드에만) */
 function addHudBrackets() {
