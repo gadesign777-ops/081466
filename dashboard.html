@@ -134,7 +134,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .pill-o{background:rgba(255,123,46,0.1);border:1px solid rgba(255,123,46,0.38);color:var(--orange)}
 
 /* Grid */
-.grid{display:grid;grid-template-columns:228px 1fr 268px;gap:13px}
+.grid{display:grid;grid-template-columns:228px 1fr 268px;gap:13px;align-items:start}
 .left-p,.right-p{display:flex;flex-direction:column;gap:13px}
 .center-p{display:flex;flex-direction:column;gap:13px}
 
@@ -248,6 +248,18 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .mg-badge.wait{background:rgba(255,123,46,.12);color:var(--orange);border:1px solid rgba(255,123,46,.3)}
 .mg-badge.none{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1)}
 .mg-est{color:rgba(255,215,0,.65);font-style:italic}
+.mg-inp{width:100%;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.22);
+  border-radius:6px;color:var(--text);font-size:12px;font-family:inherit;
+  padding:7px 9px;outline:none}
+.mg-inp:focus{border-color:rgba(0,212,255,0.5);background:rgba(0,212,255,0.1)}
+.mg-hist-row{display:flex;align-items:center;gap:6px;padding:5px 2px;font-size:10px;
+  color:rgba(220,240,255,0.75);border-bottom:1px dashed rgba(255,255,255,0.06)}
+.mg-hist-del{padding:2px 7px;background:rgba(255,50,50,0.1);border:1px solid rgba(255,50,50,0.25);
+  border-radius:5px;color:rgba(255,80,80,0.8);font-size:10px;cursor:pointer;flex-shrink:0}
+.mg-hist-del:hover{background:rgba(255,50,50,0.22)}
+.mg-add-btn{padding:4px 10px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.3);
+  border-radius:6px;color:var(--neon);font-size:9px;cursor:pointer;transition:all .18s}
+.mg-add-btn:hover{background:rgba(0,212,255,0.16)}
 
 /* Strategy */
 .strat-row{display:flex;justify-content:space-between;align-items:center;
@@ -1228,15 +1240,18 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       </div>
     </div>
 
-    <!-- 2차 마이그레이션 현황 -->
+    <!-- 마이그레이션 현황 -->
     <div class="card" style="border-color:rgba(0,212,255,.3);background:rgba(0,10,26,.85)">
       <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div>
-      <div class="lbl" style="display:flex;justify-content:space-between;align-items:center">
-        📦 2차 마이그레이션 현황
-        <span style="color:rgba(0,232,150,.65);font-size:7.5px;letter-spacing:1.5px;animation:pulse 1.5s infinite">● REALTIME</span>
+      <div class="lbl" style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap">
+        <span>📦 마이그레이션 현황</span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <button class="mg-add-btn" onclick="openMigModal()">＋ 입력</button>
+          <span style="color:rgba(0,232,150,.65);font-size:7.5px;letter-spacing:1.5px;animation:pulse 1.5s infinite">● REALTIME</span>
+        </span>
       </div>
       <div id="migrationList"></div>
-      <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:8px;text-align:right">입금 후 약 14일 보류 → 실사용(전송 가능) 전환 · 가족이 알려주는 소식 기준으로 갱신</div>
+      <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:8px;text-align:right">2차 이후 N차까지 자유 입력 · 입금 후 약 14일 보류 → 실사용 전환</div>
     </div>
 
 
@@ -1923,7 +1938,48 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
   </div>
 </div>
 
-<!-- ===== 데이터 입력 모달 ===== -->
+<!-- ===== 마이그레이션 입력 모달 ===== -->
+<div class="rev-modal-ov" id="migModalOv" onclick="if(event.target===this)closeMigModal()">
+  <div class="rev-modal-box">
+    <div class="rev-modal-title">📦 마이그레이션 입력</div>
+    <div style="color:rgba(0,212,255,0.5);font-size:9px;margin-bottom:14px">2차 이후 N차 마이그레이션이 랜덤하게 들어올 때마다 추가해주세요</div>
+
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <select class="mg-inp" id="mg_who" style="flex:1.4" onchange="migSuggestRound()">
+        <option value="사장님">👨‍💼 사장님</option>
+        <option value="아내">👩‍💼 아내</option>
+        <option value="큰아들">💻 큰아들</option>
+        <option value="작은아들">🪖 작은아들</option>
+      </select>
+      <input class="mg-inp" id="mg_round" style="flex:1;text-align:center" type="number" min="1" step="1" placeholder="차수">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <select class="mg-inp" id="mg_status" onchange="migToggleFields()">
+        <option value="done">✅ 입금 완료</option>
+        <option value="pending">⏳ 입금 대기중 (예상)</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px" id="mg_dateRow">
+      <input class="mg-inp" id="mg_date" type="date">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <input class="mg-inp" id="mg_pi" type="number" step="0.001" placeholder="금액(π) · 모르면 비워두세요">
+    </div>
+    <button class="rev-add-btn" onclick="migAddEntry()">＋ 이 내용으로 기록 추가</button>
+
+    <hr style="border:none;border-top:1px solid rgba(0,212,255,0.08);margin:16px 0">
+
+    <div style="color:rgba(0,212,255,0.5);font-size:8.5px;letter-spacing:1.5px;margin-bottom:6px">전체 기록 (삭제하려면 ✕)</div>
+    <div id="migItemList" style="max-height:220px;overflow-y:auto"></div>
+
+    <hr style="border:none;border-top:1px solid rgba(0,212,255,0.08);margin:16px 0">
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn-close-m" onclick="closeMigModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+
 <div class="modal-ov" id="modalOv" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
     <div class="modal-title">📊 일일 채굴 현황 입력</div>
@@ -2114,55 +2170,175 @@ renderLockups();
 setInterval(renderLockups, 1000);
 
 /* ================================================================
-   2차 마이그레이션 현황 (가족 제보 기반 — 수동 갱신, 실시간 카운트다운)
+   마이그레이션 기록 (2차 이후 N차까지 반복 입력 · 가족별 다건 관리)
    ================================================================ */
-const MIGRATIONS = [
-  {n:'사장님',   icon:'👨‍💼', arrived:'2026-11-02', usable:'2026-11-17T00:00:00+09:00', pi:null, estimated:false},
-  {n:'아내',     icon:'👩‍💼', arrived:null,          usable:null,                        pi:2500, estimated:true},
-  {n:'큰아들',   icon:'💻',   arrived:null,          usable:null,                        pi:null, estimated:false},
-  {n:'작은아들', icon:'🪖',   arrived:null,          usable:null,                        pi:null, estimated:false},
-];
+const MIG_PEOPLE = ['사장님','아내','큰아들','작은아들'];
+const MIG_ICONS = {'사장님':'👨‍💼','아내':'👩‍💼','큰아들':'💻','작은아들':'🪖'};
+const MIG_HOLD_DAYS = 14;
+const MIG_KEY = 'piMigrationHistory_v1';
+
+function migSeed(){
+  return {
+    '사장님':   [{round:2, arrived:'2026-11-02', pi:null, estimated:false}],
+    '아내':     [{round:2, arrived:null,          pi:2500, estimated:true}],
+    '큰아들':   [],
+    '작은아들': [],
+  };
+}
+function migLoad(){
+  try{
+    const raw = localStorage.getItem(MIG_KEY);
+    if (raw) return JSON.parse(raw);
+  }catch(e){}
+  return migSeed();
+}
+function migSave(){
+  try{ localStorage.setItem(MIG_KEY, JSON.stringify(MIG_STATE)); }catch(e){}
+}
+let MIG_STATE = migLoad();
+
+function migUsableDate(arrived){
+  if (!arrived) return null;
+  const d = new Date(arrived + 'T00:00:00+09:00');
+  d.setDate(d.getDate() + MIG_HOLD_DAYS);
+  return d;
+}
+function migNextRound(person){
+  const list = MIG_STATE[person] || [];
+  if (!list.length) return 1;
+  return Math.max(...list.map(e=>e.round)) + 1;
+}
+function migSuggestRound(){
+  const who = document.getElementById('mg_who')?.value;
+  const r = document.getElementById('mg_round');
+  if (who && r) r.value = migNextRound(who);
+}
+function migToggleFields(){
+  const status = document.getElementById('mg_status')?.value;
+  const row = document.getElementById('mg_dateRow');
+  const piInp = document.getElementById('mg_pi');
+  if (row) row.style.display = status === 'done' ? 'flex' : 'none';
+  if (piInp) piInp.placeholder = status === 'done' ? '금액(π) · 모르면 비워두세요' : '예상 금액(π)';
+}
+function openMigModal(){
+  try{
+    migSuggestRound();
+    migToggleFields();
+    renderMigHistList();
+    document.getElementById('migModalOv').classList.add('open');
+  }catch(e){}
+}
+function closeMigModal(){
+  const ov = document.getElementById('migModalOv');
+  if (ov) ov.classList.remove('open');
+}
+function migAddEntry(){
+  try{
+    const who = document.getElementById('mg_who').value;
+    const round = parseInt(document.getElementById('mg_round').value) || migNextRound(who);
+    const status = document.getElementById('mg_status').value;
+    const date = document.getElementById('mg_date').value;
+    const piVal = parseFloat(document.getElementById('mg_pi').value);
+    const pi = isNaN(piVal) ? null : piVal;
+
+    if (status === 'done' && !date){ alert('입금일을 입력해주세요.'); return; }
+
+    const entry = { round, arrived: status === 'done' ? date : null, pi, estimated: status !== 'done' };
+    MIG_STATE[who] = MIG_STATE[who] || [];
+    const idx = MIG_STATE[who].findIndex(e=>e.round===round);
+    if (idx >= 0) MIG_STATE[who][idx] = entry; else MIG_STATE[who].push(entry);
+    MIG_STATE[who].sort((a,b)=>a.round-b.round);
+    migSave();
+    renderMigrations();
+    renderMigHistList();
+    document.getElementById('mg_pi').value = '';
+    document.getElementById('mg_date').value = '';
+    migSuggestRound();
+    showToast();
+  }catch(e){}
+}
+function migDeleteEntry(who, round){
+  try{
+    MIG_STATE[who] = (MIG_STATE[who]||[]).filter(e=>e.round!==round);
+    migSave();
+    renderMigrations();
+    renderMigHistList();
+  }catch(e){}
+}
+function renderMigHistList(){
+  try{
+    const box = document.getElementById('migItemList');
+    if (!box) return;
+    const rows = [];
+    MIG_PEOPLE.forEach(p=> (MIG_STATE[p]||[]).forEach(e=> rows.push({p, ...e})) );
+    if (!rows.length){
+      box.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:10px;padding:6px 2px">기록된 마이그레이션이 없습니다.</div>';
+      return;
+    }
+    rows.sort((a,b)=> a.p===b.p ? a.round-b.round : MIG_PEOPLE.indexOf(a.p)-MIG_PEOPLE.indexOf(b.p));
+    box.innerHTML = rows.map(e=>{
+      const stat = e.arrived ? `입금 ${e.arrived}` : `대기중${e.pi!=null?' · 예상 '+e.pi.toLocaleString()+'π':''}`;
+      const piStr = e.arrived && e.pi!=null ? ' · '+e.pi.toLocaleString()+'π' : '';
+      return `<div class="mg-hist-row">
+        <span style="flex-shrink:0">${MIG_ICONS[e.p]}</span>
+        <span style="flex:1">${e.p} ${e.round}차 — ${stat}${piStr}</span>
+        <span class="mg-hist-del" onclick="migDeleteEntry('${e.p}',${e.round})">✕</span>
+      </div>`;
+    }).join('');
+  }catch(e){}
+}
 function renderMigrations(){
   try{
     const box = document.getElementById('migrationList');
     if (!box) return;
     const now = Date.now();
-    box.innerHTML = MIGRATIONS.map(m=>{
-      if (!m.arrived && m.pi==null){
+    box.innerHTML = MIG_PEOPLE.map(p=>{
+      const list = (MIG_STATE[p]||[]).slice().sort((a,b)=>a.round-b.round);
+      if (!list.length){
         return `<div class="lk-row mg-pending">
           <div style="text-align:left;min-width:0">
-            <div class="lk-nm">${m.icon} ${m.n}</div>
+            <div class="lk-nm">${MIG_ICONS[p]} ${p}</div>
             <div class="lk-date">정보 없음</div>
           </div>
           <div class="lk-cd"><span class="mg-badge none">미확인</span></div>
         </div>`;
       }
-      if (!m.arrived){
-        return `<div class="lk-row mg-pending">
-          <div style="text-align:left;min-width:0">
-            <div class="lk-nm">${m.icon} ${m.n}</div>
-            <div class="lk-date">입금 대기중 · <span class="lk-pi mg-est">예상 약 ${m.pi.toLocaleString()}π</span></div>
-          </div>
-          <div class="lk-cd"><span class="mg-badge wait">⏳ 대기중</span></div>
-        </div>`;
-      }
-      const u = new Date(m.usable).getTime();
-      const done = now >= u;
-      let cd = '';
-      if (!done){
+      const confirmed = list.filter(e=>e.arrived);
+      const totalPi = confirmed.reduce((s,e)=>s+(e.pi||0),0);
+      const hasUnknownPi = confirmed.some(e=>e.pi==null);
+      const activeHolding = confirmed.filter(e=>migUsableDate(e.arrived).getTime()>now).sort((a,b)=>b.round-a.round)[0];
+      const pending = list.filter(e=>!e.arrived).sort((a,b)=>b.round-a.round)[0];
+      const latestDone = confirmed.slice().sort((a,b)=>b.round-a.round)[0];
+
+      const summary = confirmed.length
+        ? `${Math.max(...confirmed.map(e=>e.round))}차까지 완료 · 누적 ${totalPi.toLocaleString()}π${hasUnknownPi?'+':''}`
+        : '아직 입금 완료 없음';
+
+      let mainLine = '', rightHtml = '';
+      if (activeHolding){
+        const u = migUsableDate(activeHolding.arrived).getTime();
         const ms = u-now;
         const d = Math.floor(ms/86400000);
         const h = String(Math.floor(ms%86400000/3600000)).padStart(2,'0');
         const mi = String(Math.floor(ms%3600000/60000)).padStart(2,'0');
         const s = String(Math.floor(ms%60000/1000)).padStart(2,'0');
-        cd = `<div class="lk-d">D-${d}</div><div class="lk-hms">${h}:${mi}:${s}</div>`;
+        mainLine = `${activeHolding.round}차 입금 ${activeHolding.arrived}`;
+        rightHtml = `<div class="lk-d">D-${d}</div><div class="lk-hms">${h}:${mi}:${s}</div>`;
+      } else if (pending){
+        mainLine = `${pending.round}차 대기중${pending.pi!=null?' · 예상 '+pending.pi.toLocaleString()+'π':''}`;
+        rightHtml = `<span class="mg-badge wait">⏳ 대기중</span>`;
+      } else if (latestDone){
+        mainLine = `${latestDone.round}차 입금 ${latestDone.arrived}`;
+        rightHtml = `<span class="mg-badge done">✅ 실사용 가능</span>`;
       }
-      return `<div class="lk-row${done?'':' lk-next'}">
+
+      return `<div class="lk-row${activeHolding?' lk-next':''}">
         <div style="text-align:left;min-width:0">
-          <div class="lk-nm">${m.icon} ${m.n}${done?' <span class="mg-badge done">✅ 실사용 가능</span>':''}</div>
-          <div class="lk-date">입금 ${m.arrived}${m.pi? ' · <span class="lk-pi">'+m.pi.toLocaleString()+'π</span>':''}</div>
+          <div class="lk-nm">${MIG_ICONS[p]} ${p}</div>
+          <div class="lk-date">${mainLine}</div>
+          <div style="font-size:7.5px;color:rgba(255,255,255,.28);margin-top:1px">${summary}</div>
         </div>
-        <div class="lk-cd">${cd}</div>
+        <div class="lk-cd">${rightHtml}</div>
       </div>`;
     }).join('');
   } catch(e) {}
