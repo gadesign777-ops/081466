@@ -544,6 +544,15 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .intel-right .intel-log{flex:1 1 0;min-height:150px;max-height:none}
 .intel-log-row{display:flex;gap:8px;padding:4px 2px;font-size:9px;border-bottom:1px dashed rgba(255,255,255,0.06);color:rgba(220,240,255,0.7)}
 .intel-log-t{flex-shrink:0;color:rgba(255,255,255,0.3);font-family:monospace;font-size:8px;width:56px}
+.intel-log-row a,.intel-base a{color:rgba(0,212,255,0.7);text-decoration:none}
+.intel-log-row a:hover,.intel-base a:hover{text-decoration:underline}
+.intel-log-day{font-size:8.5px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:1px;padding:6px 2px 2px}
+.intel-log-day.today{color:var(--green)}
+.intel-log-dup{color:rgba(255,255,255,0.3);font-size:8px}
+.intel-src-ok{font-size:7.5px;padding:0 4px;border-radius:3px;background:rgba(0,232,150,0.12);color:var(--green);white-space:nowrap}
+.intel-src-unv{font-size:7.5px;padding:0 4px;border-radius:3px;background:rgba(255,107,107,0.1);color:#ff8a8a;white-space:nowrap}
+.intel-base{margin-top:6px;font-size:8.5px;line-height:1.5;color:rgba(255,240,200,0.7);padding:4px 6px;
+  background:rgba(255,215,0,0.035);border-left:2px solid rgba(255,215,0,0.35);border-radius:0 4px 4px 0}
 .intel-src-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .intel-src-link{font-size:9px;color:rgba(0,212,255,0.6);text-decoration:none;padding:3px 8px;
   background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:5px}
@@ -1432,7 +1441,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <div class="pinews-date">11.09</div>
         <div class="pinews-body">
           <div class="pinews-title"><span class="pinews-tag tag-market">시장</span>PI $0.0697 · 24시간 -3.9% · 시총 약 $7.9억</div>
-          <div class="pinews-desc">ATH($2.98, 2025.02) 대비 약 -97.7%. 10월 말~11월 초 $0.07~0.08 박스권에서 소폭 하락</div>
+          <div class="pinews-desc">ATH($2.98, 2025.02) 대비 약 -97.7%. 11.09 장중 사상 최저 약 $0.062대 보도(출처별 $0.0624~0.0626 상이) 후 $0.07 안팎 회복</div>
           <div class="pinews-src">CoinGecko 2026.11.09</div>
         </div>
       </div>
@@ -1497,7 +1506,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
           🛰️ Pi 전략 인텔리전스 실시간 체크
           <span class="pinews-status" id="intelStatus">● 체크 대기중</span>
         </div>
-        <div style="color:rgba(255,255,255,0.28);font-size:8.5px">기준: Pi Daily Strategic Intelligence Master Baseline (2026-09-20) · AI Contact·전략접촉·거래소 KPI를 좌측 리포트 기준으로 상시 검증</div>
+        <div style="color:rgba(255,255,255,0.28);font-size:8.5px">기준: Pi Daily Strategic Intelligence Master Baseline (2026-09-20 → 2026-11-13 항목 팩트체크 갱신) · AI Contact·전략접촉·거래소 KPI를 좌측 리포트 기준으로 상시 검증</div>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
         <button class="pinews-link-btn" id="intelRfBtn" onclick="fetchIntelCheck()">↻ 지금 실시간 체크</button>
@@ -1536,7 +1545,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <div id="intelReadyList"></div>
 
         <!-- 신호 변경 이력 -->
-        <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:6px 0 2px">신호 변경 이력 — 전일 대비 새 변화 우선 기록</div>
+        <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:6px 0 2px">신호 변경 이력 — 이전 체크 대비 새 변화 · 오늘 변화 맨 위</div>
         <div class="intel-log" id="intelLogList"></div>
 
         <div class="intel-lvleg">
@@ -1567,7 +1576,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       <span class="intel-src-plain">📄 창립자/로드맵/Pi2Day/Ventures/OpenMind 자료 — 비공개 리서치 원자료 (링크 없음)</span>
     </div>
 
-    <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:9px;text-align:right">Daily Report Operating Standard: 전일 대비 변화 우선 표시 · Confirmed Fact/Credible Signal/Interpretation/Unverified Rumor 4단계 분류 · 공개 데이터 없으면 추정치를 사실처럼 채우지 않음</div>
+    <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:9px;text-align:right">Daily Report Operating Standard: 이전 체크 대비 변화 우선 표시(날짜별 묶음) · 첫 체크는 기준 저장만 · Confirmed Fact/Credible Signal/Interpretation/Unverified Rumor 4단계 분류 · 공개 데이터 없으면 추정치를 사실처럼 채우지 않음</div>
   <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
 </div>
 
@@ -2843,31 +2852,54 @@ function renderNews() {
    PI 전략 인텔리전스 실시간 체크
    (Pi Daily Strategic Intelligence Master Baseline 2026-09-20 연동)
    ================================================================ */
+/* base: 2026-11-13 수동 팩트체크 기준선 (라이브 체크와 별개로 항상 표시)
+   lv/trust: 사용자가 직접 바꾸기 전까지의 기본값 */
+const INTEL_BASE_DATE = '2026-11-13';
 const INTEL_AI = [
-  {key:'openai',    nm:'OpenAI / ChatGPT',   en:'OpenAI',    q:'"Pi Network" OpenAI'},
-  {key:'anthropic', nm:'Anthropic / Claude', en:'Anthropic', q:'"Pi Network" Anthropic'},
-  {key:'google',    nm:'Google / Gemini',    en:'Google',    q:'"Pi Network" Gemini'},
-  {key:'xai',       nm:'xAI / Grok',         en:'xAI',       q:'"Pi Network" xAI OR Grok'},
+  {key:'openai',    nm:'OpenAI / ChatGPT',   en:'공식 접점 없음 · 2026-11-13 확인', q:'"Pi Network" OpenAI', lv:0, trust:'rumor',
+   base:'공식 파트너십·API 통합 발표 없음. 검색되는 기사는 대부분 "ChatGPT가 본 PI 가격 예측"류 콘텐츠'},
+  {key:'anthropic', nm:'Anthropic / Claude', en:'공식 접점 없음 · 2026-11-13 확인', q:'"Pi Network" Anthropic', lv:0, trust:'rumor',
+   base:'Pi Network와의 제휴·통합 공개 자료 없음'},
+  {key:'google',    nm:'Google / Gemini',    en:'공식 접점 없음 · 2026-11-13 확인', q:'"Pi Network" Gemini', lv:0, trust:'rumor',
+   base:'제휴 발표 없음. 2026.01 "Gemini·Grok PI 가격 전망" 기사 노출뿐 (파트너십 아님)'},
+  {key:'xai',       nm:'xAI / Grok',         en:'공식 접점 없음 · 2026-11-13 확인', q:'"Pi Network" xAI OR Grok', lv:0, trust:'rumor',
+   base:'제휴 발표 없음. Grok 답변을 인용한 가격 코멘트 기사만 존재'},
 ];
 const INTEL_STRAT = [
-  {key:'miami',    nm:'Consensus Miami (XDC 등 기관 네트워킹)',  en:'Strategic Contact', q:'"Pi Network" Consensus Miami'},
-  {key:'stanford', nm:'Stanford Network (창립자·OpenMind 연결)', en:'Ecosystem Contact', q:'"Pi Network" Stanford'},
+  {key:'miami',    nm:'Consensus Miami 2026 (공식 스폰서)', en:'2026-05-05~07 · Miami', q:'"Pi Network" Consensus Miami', lv:2, trust:'fact',
+   base:'Pi Network 공식 스폰서 참가. Kokkalis 5.7 패널 "How to Prove You\'re Human in an AI World", Fan 5.6 세션(인프라·신원 검증). ※ XDC 연계는 공개 근거 없음',
+   src:'https://crypto.news/pi-network-confirms-consensus-2026-sponsorship/'},
+  {key:'stanford', nm:'Stanford Network (창립자·OpenMind 연결)', en:'Pi Ventures 첫 투자 · 2025-11-03', q:'"Pi Network" Stanford OpenMind', lv:3, trust:'fact',
+   base:'OpenMind CEO Jan Liphardt = Stanford 생명공학 교수, 창립자들과 Stanford Distributed Trust Initiative 인연. Pi Network Ventures 첫 투자처가 OpenMind($20M 라운드 참여 보도)',
+   src:'https://thedefiant.io/news/markets/pi-network-ventures-makes-its-first-move-investing-in-openmind-to-build-the-operating-system-for-robot-intelligence'},
 ];
 const INTEL_PI = [
-  {key:'solohost',    nm:'SoloHost (로컬 AI 앱 플랫폼)',       en:'Pi Desktop 0.6.4 · 2026-10-22', q:'"Pi Network" SoloHost'},
-  {key:'piverify',    nm:'PiVerify / Sign-in (외부 KYC 개방)', en:'1,800만+ KYC 인프라',           q:'"Pi Network" PiVerify'},
-  {key:'nodecompute', nm:'Node Compute (외부 workload PoC)',  en:'OpenMind 투자 연계',             q:'"Pi Network" "Node Compute" OpenMind'},
+  {key:'solohost',    nm:'SoloHost (로컬 AI 앱 플랫폼)',       en:'Pi Desktop 0.6.4 · 2026-10-22', q:'"Pi Network" SoloHost', lv:1, trust:'signal',
+   base:'Pi2Day(6.28) 공개 → 0.6.4에서 포트 개방 없이 원격 접속. 노드 42만+ (자체 발표, 독립 검증 없음). 분산 컴퓨트는 아직 "coming soon". 11.18 Summit Day2가 AI 주제',
+   src:'https://crypto.news/pi-network-pivot-ai-identity-infrastructure-pi2day/'},
+  {key:'piverify',    nm:'PiVerify / Sign-in (외부 KYC 개방)', en:'얼굴 고유성 체크 추가 · 2026-10', q:'"Pi Network" PiVerify', lv:1, trust:'signal',
+   base:'외부 기업용 KYC(Pi로 결제)·Pi 계정 로그인. 개발자 업데이트로 얼굴 고유성 체크·추가 liveness 확인 도입. KYC 1,800만+ (자체 발표). 외부 고객사 명단은 미공개',
+   src:'https://crypto.news/pi-network-developer-updates-ecosystem-summit/'},
+  {key:'nodecompute', nm:'Node Compute (외부 workload PoC)',  en:'OpenMind PoC · 상용화 미확인', q:'"Pi Network" "Node Compute" OpenMind', lv:1, trust:'signal',
+   base:'자원한 노드 운영자들이 OpenMind 이미지 인식 모델을 실행한 PoC. "35만 노드" 보도 있으나 실제 처리량·유료 workload는 미공개',
+   src:'https://coingape.com/pi-network-dedicates-350000-active-nodes-for-ai-with-openmind-partnership'},
 ];
 const INTEL_TRUST = ['rumor','interp','signal','fact'];
 const INTEL_TRUST_LABEL = {rumor:'미확인 루머', interp:'해석·추정', signal:'신뢰 신호', fact:'확인된 사실'};
 const INTEL_KPI = [
-  {nm:'Mainnet 활성 사용자 (거래·앱 사용 기준)',        q:'"Pi Network" active users mainnet'},
-  {nm:'DEX/AMM 거래량 · Liquidity',                     q:'"Pi Network" DEX volume liquidity'},
-  {nm:'Pi 앱 결제 및 매출',                              q:'"Pi Network" app payments revenue'},
-  {nm:'PiVerify 외부 고객 · 매출',                       q:'"Pi Network" PiVerify customers revenue'},
-  {nm:'SoloHost · Node Compute 외부 workload',           q:'"Pi Network" SoloHost "Node Compute" workload'},
+  {nm:'Mainnet 활성 사용자 (거래·앱 사용 기준)',        q:'"Pi Network" active users mainnet',
+   base:'메인넷 마이그레이션 완료 16,568,774명(2026.03 공식 스냅샷 인용) · 등록 약 6천만 주장. 일간 활성(거래·앱 사용) 수치는 공식 미공개'},
+  {nm:'DEX/AMM 거래량 · Liquidity',                     q:'"Pi Network" DEX volume liquidity',
+   base:'Protocol 27(9월)로 DEX/AMM 도입 → Protocol 28(10.16) 적용. 메인넷 스왑 거래량·TVL은 독립 확인 불가 (9월 "DeFi TVL 0" 보도)'},
+  {nm:'Pi 앱 결제 및 매출',                              q:'"Pi Network" app payments revenue',
+   base:'앱 결제액 공개 집계 없음. Summit 해커톤 상금 $200K는 USDT 지급(PI 수요와 무관)'},
+  {nm:'PiVerify 외부 고객 · 매출',                       q:'"Pi Network" PiVerify customers revenue',
+   base:'상품 출시는 확인, 외부 고객사·매출 수치 미공개'},
+  {nm:'SoloHost · Node Compute 외부 workload',           q:'"Pi Network" SoloHost "Node Compute" workload',
+   base:'OpenMind PoC 외 유료 외부 workload 확인 안 됨'},
   {nm:'Migration/Unlock (유통량 증가)',                  live:'supply'},
-  {nm:'거래소 유동성 (Kraken 등)',                       live:'volume'},
+  {nm:'거래소 유동성 (Kraken 등)',                       live:'volume',
+   base:'Kraken 2026-03-13 PI 상장. 11.09 장중 사상 최저 약 $0.062대 보도(출처별 상이), 이후 $0.07 안팎'},
 ];
 const INTEL_KPI_OPTS = ['공개 데이터 없음','달성','부분달성','후퇴'];
 const INTEL_READY = [
@@ -2890,15 +2922,59 @@ const INTEL_STATE = intelLoad();
 if (!INTEL_STATE.pi) INTEL_STATE.pi = {};
 if (!INTEL_STATE.log) INTEL_STATE.log = [];
 
-function intelFindItem(group, key){
+function intelItemObj(group, key){
   const list = group==='ai' ? INTEL_AI : group==='strat' ? INTEL_STRAT : INTEL_PI;
-  return (list.find(x=>x.key===key) || {}).nm || key;
+  return list.find(x=>x.key===key) || {};
+}
+function intelFindItem(group, key){
+  return intelItemObj(group,key).nm || key;
 }
 
+/* 신뢰 출처 목록: 제목 끝 " - 매체명"으로 판별 (Google News RSS 형식) */
+const INTEL_TRUSTED_SRC = /(minepi|pi network|coindesk|reuters|bloomberg|cointelegraph|the block|decrypt|kraken|coingecko|associated press|\bap news|financial times|wall street journal|forbes)/i;
+function intelSrcName(title){
+  const t = String(title||''); const cut = t.lastIndexOf(' - ');
+  return cut > 10 ? t.slice(cut+3).trim() : '';
+}
+function intelIsTrusted(title){
+  const src = intelSrcName(title);
+  return !!src && INTEL_TRUSTED_SRC.test(src);
+}
+function intelSrcBadge(title){
+  return intelIsTrusted(title)
+    ? '<span class="intel-src-ok" title="신뢰 출처 — 그래도 원문 확인 필요">✅ 신뢰출처</span>'
+    : '<span class="intel-src-unv" title="일반 매체·블로그 — 사실 확인 전">미확인</span>';
+}
+/* 제목 정규화: 매체명·특수문자 제거 후 단어 집합 비교 → 비슷한 소식 하나로 묶기 */
+function intelNormTitle(title){
+  let t = String(title||''); const cut = t.lastIndexOf(' - ');
+  if (cut > 10) t = t.slice(0,cut);
+  return t.toLowerCase().replace(/&lt;/g,'<').replace(/[^a-z0-9가-힣\s]/g,' ').split(/\s+/)
+          .filter(w=>w.length>2 && !['the','and','for','with','pi','network','news'].includes(w));
+}
+function intelSimilar(a, b){
+  const A = new Set(intelNormTitle(a)), B = new Set(intelNormTitle(b));
+  if (!A.size || !B.size) return false;
+  let n = 0; A.forEach(w=>{ if (B.has(w)) n++; });
+  return n / Math.min(A.size, B.size) >= 0.6;
+}
+/* 신규 신호 기록: 같은 항목의 최근 48시간 로그에 비슷한 제목이 있으면 묶음 카운트만 올림 */
+function intelLogSignal(nm, title, link){
+  try{
+    const DAY2 = 2*86400000;
+    const dup = INTEL_STATE.log.find(e=>e.type==='signal' && e.nm===nm &&
+      (Date.now()-new Date(e.ts)) < DAY2 && intelSimilar(e.title, title));
+    if (dup){ dup.dupes = (dup.dupes||0) + 1; intelSave(); return; }
+    INTEL_STATE.log.unshift({ts: new Date().toISOString(), type:'signal', nm, title, link,
+                             trusted: intelIsTrusted(title)});
+    INTEL_STATE.log = INTEL_STATE.log.slice(0, 40);
+    intelSave();
+  }catch(e){}
+}
 function intelLog(msg){
   try{
     INTEL_STATE.log.unshift({ts: new Date().toISOString(), msg});
-    INTEL_STATE.log = INTEL_STATE.log.slice(0, 30);
+    INTEL_STATE.log = INTEL_STATE.log.slice(0, 40);
     intelSave();
   }catch(e){}
 }
@@ -2907,7 +2983,7 @@ function intelSetLevel(group, key, lv){
   try{
     INTEL_STATE[group] = INTEL_STATE[group] || {};
     INTEL_STATE[group][key] = INTEL_STATE[group][key] || {};
-    const old = INTEL_STATE[group][key].lv || 0;
+    const old = INTEL_STATE[group][key].lv != null ? INTEL_STATE[group][key].lv : (intelItemObj(group,key).lv || 0);
     INTEL_STATE[group][key].lv = Number(lv);
     if (Number(lv) !== old) intelLog(`${intelFindItem(group,key)}: Evidence Lv${old} → Lv${lv} (수동 조정)`);
     intelSave();
@@ -2919,7 +2995,7 @@ function intelSetTrust(group, key, trust){
   try{
     INTEL_STATE[group] = INTEL_STATE[group] || {};
     INTEL_STATE[group][key] = INTEL_STATE[group][key] || {};
-    const old = INTEL_STATE[group][key].trust;
+    const old = INTEL_STATE[group][key].trust || intelItemObj(group,key).trust || 'interp';
     INTEL_STATE[group][key].trust = trust;
     if (trust !== old) intelLog(`${intelFindItem(group,key)}: 신뢰도 → ${INTEL_TRUST_LABEL[trust]} (수동 조정)`);
     intelSave();
@@ -2929,7 +3005,7 @@ function intelSetTrust(group, key, trust){
 
 function intelSetKpi(i, val){
   try{
-    const old = (INTEL_STATE.kpi[i] && INTEL_STATE.kpi[i].status) || '공개 데이터 없음';
+    const old = (INTEL_STATE.kpi[i] && INTEL_STATE.kpi[i].status) || INTEL_KPI[i].def || '공개 데이터 없음';
     INTEL_STATE.kpi[i] = INTEL_STATE.kpi[i] || {};
     INTEL_STATE.kpi[i].status = val;
     INTEL_STATE.kpi[i].at = new Date().toISOString();
@@ -2940,11 +3016,14 @@ function intelSetKpi(i, val){
 
 function intelCard(item, group){
   const st = (INTEL_STATE[group] && INTEL_STATE[group][item.key]) || {};
-  const lv = st.lv || 0;
-  const trust = st.trust || 'interp';
+  const lv = st.lv != null ? st.lv : (item.lv || 0);
+  const trust = st.trust || item.trust || 'interp';
+  const baseLine = item.base
+    ? `<div class="intel-base">📌 ${INTEL_BASE_DATE} 확인: ${item.base}${item.src?` <a href="${item.src}" target="_blank" rel="noopener">→ 출처</a>`:''}</div>`
+    : '';
   const sig = st.headline
-    ? `🔎 <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
-    : '최근 30일 내 감지된 공개 신호 없음';
+    ? `🔎 ${intelSrcBadge(st.headline)} <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
+    : '최근 14일 내 감지된 새 공개 신호 없음';
   const chk = st.checkedAt ? '확인 ' + jbRel(new Date(st.checkedAt)) : '아직 미체크';
   const lvOpts = [0,1,2,3,4,5].map(n=>`<option value="${n}" ${n===lv?'selected':''}>Lv${n}</option>`).join('');
   const trustOpts = INTEL_TRUST.map(t=>`<option value="${t}" ${t===trust?'selected':''}>${INTEL_TRUST_LABEL[t]}</option>`).join('');
@@ -2956,6 +3035,7 @@ function intelCard(item, group){
         <select class="intel-kpi-sel" style="flex:1" onchange="intelSetLevel('${group}','${item.key}',this.value)">${lvOpts}</select>
         <select class="intel-kpi-sel intel-trust-${trust}" style="flex:1" onchange="intelSetTrust('${group}','${item.key}',this.value)">${trustOpts}</select>
       </div>
+      ${baseLine}
       <div class="intel-sig">${sig}</div>
       <div class="intel-chk">${chk}</div>
     </div>`;
@@ -2969,11 +3049,33 @@ function renderIntelLog(){
       box.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:9px;padding:4px 2px">아직 기록된 변경 이력이 없습니다.</div>';
       return;
     }
-    box.innerHTML = INTEL_STATE.log.map(e=>`
-      <div class="intel-log-row">
-        <span class="intel-log-t">${jbRel(new Date(e.ts))}</span>
-        <span>${e.msg}</span>
-      </div>`).join('');
+    const dayKey = d => { const x = new Date(d); return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); };
+    const today = dayKey(Date.now()), yest = dayKey(Date.now()-86400000);
+    let lastDay = null, html = '';
+    INTEL_STATE.log.forEach(e=>{
+      const dk = dayKey(e.ts);
+      if (dk !== lastDay){
+        const d = new Date(e.ts);
+        const lbl = dk===today ? '🆕 오늘 새로 생긴 변화' : dk===yest ? '어제' : `${d.getMonth()+1}.${d.getDate()}`;
+        html += `<div class="intel-log-day${dk===today?' today':''}">${lbl}</div>`;
+        lastDay = dk;
+      }
+      let body;
+      if (e.type === 'signal'){
+        const badge = e.trusted
+          ? '<span class="intel-src-ok">✅ 신뢰출처</span>'
+          : '<span class="intel-src-unv">미확인</span>';
+        const t = e.link && e.link !== '#'
+          ? `<a href="${e.link}" target="_blank" rel="noopener">${e.title}</a>` : e.title;
+        body = `🆕 ${e.nm}: 신규 신호 ${badge} — ${t}${e.dupes?` <span class="intel-log-dup">(+비슷한 기사 ${e.dupes}건)</span>`:''}`;
+      } else body = e.msg;
+      const tm = new Date(e.ts).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});
+      html += `<div class="intel-log-row">
+        <span class="intel-log-t" title="${jbRel(new Date(e.ts))}">${tm}</span>
+        <span>${body}</span>
+      </div>`;
+    });
+    box.innerHTML = html;
   }catch(e){}
 }
 
@@ -2990,7 +3092,7 @@ function renderIntelPanel(){
     const kpiBox = document.getElementById('intelKpiList');
     if (kpiBox) kpiBox.innerHTML = INTEL_KPI.map((k,i)=>{
       const st = INTEL_STATE.kpi[i] || {};
-      const cur = st.status || '공개 데이터 없음';
+      const cur = st.status || k.def || '공개 데이터 없음';
       const opts = INTEL_KPI_OPTS.map(o=>`<option ${o===cur?'selected':''}>${o}</option>`).join('');
       let live;
       if (k.live === 'volume') {
@@ -3005,9 +3107,10 @@ function renderIntelPanel(){
         } else live = '📡 실시간 유통량 데이터 아직 없음';
       } else {
         live = st.headline
-          ? `🔎 <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
-          : '최근 30일 내 감지된 공개 신호 없음';
+          ? `🔎 ${intelSrcBadge(st.headline)} <a href="${st.link}" target="_blank" rel="noopener">${st.headline}</a>`
+          : '최근 14일 내 감지된 새 공개 신호 없음';
       }
+      if (k.base) live = `<div class="intel-base" style="margin-top:0">📌 ${INTEL_BASE_DATE} 확인: ${k.base}</div>` + live;
       const chk = st.checkedAt ? '확인 ' + jbRel(new Date(st.checkedAt)) : '아직 미체크';
       return `<div class="intel-kpi-row" style="flex-direction:column;align-items:stretch">
         <div style="display:flex;align-items:center;gap:8px">
@@ -3111,10 +3214,12 @@ async function intelCheckOne(item, group){
     INTEL_STATE[group] = INTEL_STATE[group] || {};
     INTEL_STATE[group][item.key] = INTEL_STATE[group][item.key] || {};
     INTEL_STATE[group][item.key].checkedAt = new Date().toISOString();
-    if (fresh && fresh.l !== INTEL_STATE[group][item.key].link){
-      INTEL_STATE[group][item.key].headline = fresh.t.replace(/</g,'&lt;');
-      INTEL_STATE[group][item.key].link = fresh.l;
-      intelLog(`🆕 ${item.nm}: 신규 신호 감지 — "${fresh.t.replace(/</g,'&lt;')}"`);
+    const st = INTEL_STATE[group][item.key];
+    if (fresh && fresh.l !== st.link){
+      const first = !st.link;                       /* 첫 체크: 기준만 저장하고 기록 안 함 */
+      st.headline = fresh.t.replace(/</g,'&lt;');
+      st.link = fresh.l;
+      if (!first) intelLogSignal(item.nm, st.headline, fresh.l);
     }
   }catch(e){}
 }
@@ -3153,10 +3258,12 @@ async function intelCheckKpiOne(i){
     const fresh = items.filter(x=>!isNaN(x.d) && (Date.now()-x.d) <= JB_MAX_AGE)
                         .sort((a,b)=>b.d-a.d)[0];
     INTEL_STATE.kpi[i].checkedAt = new Date().toISOString();
-    if (fresh && fresh.l !== INTEL_STATE.kpi[i].link){
-      INTEL_STATE.kpi[i].headline = fresh.t.replace(/</g,'&lt;');
-      INTEL_STATE.kpi[i].link = fresh.l;
-      intelLog(`🆕 ${k.nm}: 신규 신호 감지 — "${fresh.t.replace(/</g,'&lt;')}"`);
+    const st = INTEL_STATE.kpi[i];
+    if (fresh && fresh.l !== st.link){
+      const first = !st.link;
+      st.headline = fresh.t.replace(/</g,'&lt;');
+      st.link = fresh.l;
+      if (!first) intelLogSignal(k.nm, st.headline, fresh.l);
     }
   }catch(e){}
 }
@@ -3305,7 +3412,7 @@ async function fetchKRWRate() {
 const PI_NEWS_CURATED = [
   {date:'11.09', dateISO:'2026-11-09', tag:'market', tagLbl:'시장',
    title:'PI $0.0697 · 24시간 -3.9% · 시총 약 $7.9억',
-   desc:'ATH($2.98, 2025.02) 대비 약 -97.7%. 10월 말~11월 초 $0.07~0.08 박스권에서 소폭 하락',
+   desc:'ATH($2.98, 2025.02) 대비 약 -97.7%. 11.09 장중 사상 최저 약 $0.062대 보도(출처별 $0.0624~0.0626 상이) 후 $0.07 안팎 회복',
    src:'CoinGecko 2026.11.09'},
   {date:'11.06', dateISO:'2026-11-06', tag:'official', tagLbl:'공식',
    title:'Pi Ecosystem Summit 일정 공개 — 11.17~19 온라인 · Pi Next 해커톤 $200K',
