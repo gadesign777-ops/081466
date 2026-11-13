@@ -137,6 +137,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .grid{display:grid;grid-template-columns:228px 1fr 268px;gap:13px;align-items:start}
 .left-p,.right-p{display:flex;flex-direction:column;gap:13px}
 .center-p{display:flex;flex-direction:column;gap:13px}
+.center-row{display:grid;grid-template-columns:1fr 300px;gap:13px;align-items:stretch}
+/* 3열 높이를 맞추고 마지막 카드가 남는 공간을 채움 (중간 빈 창 방지) */
+.grid{align-items:stretch}
+.left-p>:last-child,.center-p>:last-child,.right-p>:last-child{flex:1 1 auto}
+.center-row>.card{margin:0}
+.center-row>.card:last-child{display:flex;flex-direction:column}
+.center-row>.card:last-child #stratList{flex:1;display:flex;flex-direction:column;justify-content:space-around}
 
 /* Pi card */
 .pi-row{display:flex;align-items:center;gap:18px}
@@ -245,6 +252,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .mg-pending{opacity:.6}
 .mg-badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:7.5px;font-weight:800;margin-left:6px;vertical-align:middle}
 .mg-badge.done{background:rgba(0,232,150,.12);color:var(--green);border:1px solid rgba(0,232,150,.3)}
+.mg-badge.relock{background:rgba(192,96,255,.12);color:var(--purple);border:1px solid rgba(192,96,255,.3)}
 .mg-badge.wait{background:rgba(255,123,46,.12);color:var(--orange);border:1px solid rgba(255,123,46,.3)}
 .mg-badge.none{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1)}
 .mg-est{color:rgba(255,215,0,.65);font-style:italic}
@@ -529,6 +537,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .intel-trust-signal{color:var(--gold) !important}
 .intel-trust-fact{color:var(--green) !important}
 .intel-log{max-height:150px;overflow-y:auto;margin-top:6px}
+.intel-two{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:13px;align-items:stretch}
+#intelKpiList{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;align-content:start}
+#intelKpiList>:last-child:nth-child(odd){grid-column:1/-1}
+.intel-right{display:flex;flex-direction:column}
+.intel-right .intel-log{flex:1 1 0;min-height:150px;max-height:none}
 .intel-log-row{display:flex;gap:8px;padding:4px 2px;font-size:9px;border-bottom:1px dashed rgba(255,255,255,0.06);color:rgba(220,240,255,0.7)}
 .intel-log-t{flex-shrink:0;color:rgba(255,255,255,0.3);font-family:monospace;font-size:8px;width:56px}
 .intel-src-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -621,7 +634,6 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
     <div class="pill pill-g"><span class="ldot"></span>ONLINE</div>
-    <div class="pill pill-o" id="pi2badge">Pi2Day D-337</div>
     <div class="upd-badge">업데이트 <span id="lastUpd" style="color:var(--neon)">18시 33분 40초</span></div>
   </div>
 </div>
@@ -1109,7 +1121,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       </div>
       <div class="mkt-it">
         <div class="mkt-lbl">USD / KRW</div>
-        <div class="mkt-val" style="color:rgba(200,255,255,0.85)">₩1,461</div>
+        <div class="mkt-val" style="color:rgba(200,255,255,0.85)">₩1,344</div>
         <div class="mkt-sub">실시간 환율</div>
       </div>
       <div class="mkt-it">
@@ -1128,7 +1140,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <div class="mkt-sub">2025.02 기록</div>
       </div></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-        <div class="krw-live"><div class="krw-live-dot"></div>환율 실시간 <span id="krwRateDisp">₩1,461</span></div>
+        <div class="krw-live"><div class="krw-live-dot"></div>환율 실시간 <span id="krwRateDisp">₩1,344</span></div>
         <div class="mkt-last-upd" id="mktLastUpd">마지막 갱신: 18시 33분 40초 · OKX</div>
       </div>
     <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
@@ -1153,6 +1165,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
       color:rgba(255,215,0,.75);font-size:9px;font-weight:700;text-decoration:none;transition:.15s}
     .jn-quick:hover{background:rgba(255,215,0,.15)}
     </style>
+    <div class="center-row">
     <div class="card" style="border-color:rgba(0,232,150,.22)">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:9px">
         <div class="lbl" style="margin:0">📰 로봇경제시대의 유통통화 pi</div>
@@ -1178,6 +1191,37 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
         <div class="mkt-last-upd" id="jnLastUpd">갱신: 18:32</div>
       </div>
     <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
+    <!-- 전략 지표 (뉴스 카드 옆으로 이동: 빈 공간 제거) -->
+      <!-- Strategy Metrics -->
+      <div class="card">
+        <div class="lbl">전략 지표</div>
+        <div id="stratList">
+        <div class="strat-row">
+          <span class="strat-k">현재 자산 (KRW)</span>
+          <span class="strat-v" style="color:var(--gold)">₩3,717,006</span>
+        </div>
+        <div class="strat-row">
+          <span class="strat-k">$1 달성 시</span>
+          <span class="strat-v" style="color:var(--green)">₩45,285,156</span>
+        </div>
+        <div class="strat-row">
+          <span class="strat-k">$10 달성 시</span>
+          <span class="strat-v" style="color:var(--neon)">4.5억원</span>
+        </div>
+        <div class="strat-row">
+          <span class="strat-k">$100 달성 시</span>
+          <span class="strat-v" style="color:var(--purple)">45.3억원</span>
+        </div>
+        <div class="strat-row">
+          <span class="strat-k">$1,000 달성 시 🌟</span>
+          <span class="strat-v" style="color:var(--gold)">452.9억원</span>
+        </div>
+        <div class="strat-row">
+          <span class="strat-k">50Kπ 목표가 (현재가)</span>
+          <span class="strat-v" style="color:rgba(255,255,255,.32)">₩5,995,944</span>
+        </div></div>
+      <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
+    </div>
   </div>
 
   <!-- ====== RIGHT ====== -->
@@ -1264,49 +1308,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
           <span class="ldot" style="width:5px;height:5px;margin-right:2px"></span>LIVE
         </span>
       </div>
-      <div id="newsFeed" style="position:relative;overflow:hidden"><div class="news-it" style="border:1px solid #ffd70018;border-left:3px solid #ffd700">
-      <div class="news-msg">🪖 작은아들 (군복무중): 채굴 개근 행진 유지 ★</div>
-      <div class="news-time">상시</div></div><div class="news-it" style="border:1px solid #00d4ff18;border-left:3px solid #00d4ff"><a href="https://news.google.com/rss/articles/CBMiXkFVX3lxTE53T1l0X0hGRWlYQkI3dURNVUgyQklYa3BWNS1CUW4wcU9uOW1sSENKQmpJeFdMNThzYmNNVTRicHpxRGNva3luUnNWbVNTQjNwazYwRmtCSlpXLVp4Q2c?oc=5" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="news-msg">📰 Pi Launchpad Distributes SLICE Test Tokens and Introduces Liquidity Pool Price Tracking</div>
-      <div class="news-time">2일 전 · Pi Network</div></a></div><div class="news-it" style="border:1px solid #00e89618;border-left:3px solid #00e896"><a href="https://news.google.com/rss/articles/CBMinwFBVV95cUxQdkhYdjdPTTNHdFVEalF1anVBNFRQMFJEQ0RuYU5TTElDWUNHWG5FOHJPaEZTaEhFREV1MVdlQVBIeDRFaGNHN0IzbGRnSzFPMVlST0JQc0VCVm12LXpaSzhDd0hhRWFRTFhSbkxJNF9iVG5Fd1lYdlJ1alN5UEZPbXZEWlNuRlpnZkxaYTAxbGpsV0hVZlBHdnFKRlpRcTg?oc=5" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="news-msg">📰 Can Pi Network Price Break Higher After Protocol v25 Upgrade?</div>
-      <div class="news-time">3일 전 · CryptoRank</div></a></div><div class="news-it" style="border:1px solid #c8ff4018;border-left:3px solid #c8ff40"><a href="https://news.google.com/rss/articles/CBMidkFVX3lxTE9IMi1lTlBQRWZnQmNoY3VTNTk1OC1GMUpETU1LaDNrZG5oMEFDQUdCX2Z0X1VvQzE0b3ZaVGVsNkNWdlVBOFdDWGphOTFHMlFULWNLZWZUeEVRcUhIN1VGZW5GLU5GeEJPY2ZkNEtzNFRlQWpQNlE?oc=5" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="news-msg">📰 Protocol v25 Goes Live as PI Rally Stalls Below $0.10</div>
-      <div class="news-time">4일 전 · BeInCrypto</div></a></div><div class="news-it" style="border:1px solid #c060ff18;border-left:3px solid #c060ff"><a href="https://news.google.com/rss/articles/CBMiW0FVX3lxTE9tdTlJbXVaUkVpQllySFNFbl9rQS15MXYtT0RrZkZka1NyandJNzNDZG9yYzBsb0g2ZHA4d0dXQnJTeFdLVDlDZElHRzlUeXZ0cWM0N0Q0Rjd6NTA?oc=5" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="news-msg">📰 Pi Network price forecast: Will Protocol v25 boost overcome token unlock pressure?</div>
-      <div class="news-time">4일 전 · Cryptonews.net</div></a></div><div class="news-it" style="border:1px solid #ff7b2e18;border-left:3px solid #ff7b2e"><a href="https://news.google.com/rss/articles/CBMiiwFBVV95cUxNMDhvTWRYcE5rRVZzSlZibkREVFFoMEY4TVY1VUhfQlk3Vmk5ODFoakV6NnBGMFdZbTIyOWx2MnJPUnkzV0ExaDBrWkw1YVB0V0xGUTgyVHBqMDJLSTVaY0NPMGlOYmJUTnhDT21zVi1DRFBycVFmZHZnUzVyc2Z0Y0Q3ZHIzRDdRdnY0?oc=5" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block">
-      <div class="news-msg">📰 Pi Network Price Prediction as Protocol v25 Goes Live</div>
-      <div class="news-time">4일 전 · CoinGape</div></a></div><div style="position: absolute; left: 0px; right: 0px; height: 1px; top: -2px; background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.42), transparent); pointer-events: none; animation: 3.5s linear 0s infinite normal none running scan;"></div></div>
-    <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
-
-    <!-- Strategy Metrics -->
-    <div class="card">
-      <div class="lbl">전략 지표</div>
-      <div id="stratList">
-      <div class="strat-row">
-        <span class="strat-k">현재 자산 (KRW)</span>
-        <span class="strat-v" style="color:var(--gold)">₩3,717,006</span>
-      </div>
-      <div class="strat-row">
-        <span class="strat-k">$1 달성 시</span>
-        <span class="strat-v" style="color:var(--green)">₩45,285,156</span>
-      </div>
-      <div class="strat-row">
-        <span class="strat-k">$10 달성 시</span>
-        <span class="strat-v" style="color:var(--neon)">4.5억원</span>
-      </div>
-      <div class="strat-row">
-        <span class="strat-k">$100 달성 시</span>
-        <span class="strat-v" style="color:var(--purple)">45.3억원</span>
-      </div>
-      <div class="strat-row">
-        <span class="strat-k">$1,000 달성 시 🌟</span>
-        <span class="strat-v" style="color:var(--gold)">452.9억원</span>
-      </div>
-      <div class="strat-row">
-        <span class="strat-k">50Kπ 목표가 (현재가)</span>
-        <span class="strat-v" style="color:rgba(255,255,255,.32)">₩5,995,944</span>
-      </div></div>
+      <div id="newsFeed" style="position:relative;overflow:hidden"></div>
     <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
   </div>
 </div>
@@ -1317,125 +1319,83 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
       <div>
         <div class="lbl" style="margin-bottom:3px">⬡ 파이네트워크 로드맵</div>
-        <div style="color:rgba(255,255,255,0.28);font-size:8.5px" id="rmSourceLine">출처: Pi Core Team 공식 발표 (minepi.com) · 앞으로 예정된 항목만 표시 · Protocol 27 목표 9/15 반영 · 기준 2026.08.23</div>
+        <div style="color:rgba(255,255,255,0.28);font-size:8.5px" id="rmSourceLine">출처: Pi Core Team 공식 블로그 (minepi.com, 11.06 서밋 일정 포함) · 확인된 최신 내용 + 일정 확정 항목만 표시 · 일정 미발표 항목은 제외 · 기준 2026.11.09</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <button class="pinews-link-btn" id="rmRfBtn" onclick="fetchRoadmapUpdate()">↻ 실시간 갱신</button>
         <div class="rm-legend">
+          <div class="rm-leg-item"><div class="rm-leg-dot" style="background:var(--green)"></div>적용·공개</div>
           <div class="rm-leg-item"><div class="rm-leg-dot" style="background:var(--neon)"></div>진행중</div>
           <div class="rm-leg-item"><div class="rm-leg-dot" style="background:var(--orange)"></div>예정</div>
-          <div class="rm-leg-item"><div class="rm-leg-dot" style="background:rgba(255,255,255,0.15)"></div>계획</div>
         </div>
       </div>
     </div>
     <div id="rmLiveNote" style="display:none;margin-bottom:10px"></div>
     <div class="roadmap-wrap">
 
-  <!-- == 진행중 ======================== -->
-  <div class="rm-item rm-now">
-    <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-now">진행중</div>
-    <div class="rm-date">상시</div>
-    <div class="rm-title">2차 마이그레이션</div>
-    <div class="rm-desc">추천 보상 등 잔여 π 메인넷 이전. 11.9만+ 건 완료 / KYC 1,810만 명</div>
+  <!-- == 2026.11.09 재작성: 확인된 최신 내용 + 확정 일정만 ===================== -->
+  <div class="rm-item rm-done">
+    <div class="rm-dot-row"><div class="rm-dot">✓</div><div class="rm-line"></div></div>
+    <div class="rm-badge badge-done">적용</div>
+    <div class="rm-date">2026.10.16</div>
+    <div class="rm-title">Protocol v28 메인넷 적용 ✅</div>
+    <div class="rm-desc rm-catalyst">현재 프로토콜 버전. 지연 트랜잭션 처리 개선·스마트컨트랙트 일괄 업그레이드 (노드 마감 10.13, 전환 완료는 보도 기준)</div>
   </div>
 
-  <!-- == 예정 ========================= -->
-  <div class="rm-item rm-now">
-    <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-now">진행중</div>
-    <div class="rm-date">목표 2026.09.15</div>
-    <div class="rm-title">Protocol 27 🏁</div>
-    <div class="rm-desc rm-catalyst">💹 코어팀이 "2026 시퀀스의 최종 계획 업그레이드"로 공식 지칭 (총 9회 중 마지막). 목표일 9/15 보도 다수(시장/업계 매체 기준, 코어팀 공식 확정 아님) — 완료 시 현 프로토콜 개발 사이클 종료</div>
+  <div class="rm-item rm-done">
+    <div class="rm-dot-row"><div class="rm-dot">✓</div><div class="rm-line"></div></div>
+    <div class="rm-badge badge-done">출시</div>
+    <div class="rm-date">2026.10.22</div>
+    <div class="rm-title">Pi Desktop 0.6.4 💻</div>
+    <div class="rm-desc rm-catalyst">현재 버전. 공유기 설정·포트 개방 없이 SoloHost 원격 접속, 앱 설치 전·실행 시 격리 검사 강화 (공식)</div>
   </div>
 
-  <div class="rm-item rm-now">
-    <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-now">예정</div>
-    <div class="rm-date">2026.08.24</div>
-    <div class="rm-title">App Studio 과금 구조 개편</div>
-    <div class="rm-desc rm-catalyst">💹 8.17 공지 — 앱 생성·편집 방식 유료화/개편 시행 예정. 구체 금액 미공개 (공식 블로그)</div>
-  </div>
-
-  <div class="rm-item rm-now">
-    <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-now">진행중</div>
-    <div class="rm-date">2026.07~</div>
-    <div class="rm-title">App Studio 대형 업그레이드 🛠</div>
-    <div class="rm-desc rm-catalyst">💹 AI 기획 지원 + 앱 영구저장 도입 — 일회성 앱에서 데이터 유지형 실사용 앱으로 진화 (공식)</div>
+  <div class="rm-item rm-done">
+    <div class="rm-dot-row"><div class="rm-dot">✓</div><div class="rm-line"></div></div>
+    <div class="rm-badge badge-done">공개</div>
+    <div class="rm-date">2026.10.29</div>
+    <div class="rm-title">개발자 플랫폼 업데이트 🛠</div>
+    <div class="rm-desc rm-catalyst">Developer Portal 개편, BlockExplorer 테스트넷 토큰(SLICE) 가격 추적, SoloHost 앱 패키징 AI 스킬, PiVerify 얼굴 고유성·다중 liveness 추가. SoloHost 접근 가능 노드 42만+ (공식)</div>
   </div>
 
   <div class="rm-item rm-now">
     <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
     <div class="rm-badge badge-now">진행중</div>
-    <div class="rm-date">2026.06.28~</div>
-    <div class="rm-title">PiVerify 외부 개방 🔐</div>
-    <div class="rm-desc rm-catalyst">💹 1,800만+ KYC 검증 인프라를 외부 기업에 유료 개방 — 사용료 π 결제 = 실수요 창출 구조</div>
+    <div class="rm-date">2026.10.08~</div>
+    <div class="rm-title">스테이블코인 — Open Standard(OUSD) 협력 💵</div>
+    <div class="rm-desc rm-catalyst">Pioneer 보상·생태계 활용 탐색 단계 (공식 10.8). 출시일·구조는 미발표, PI는 핵심 자산으로 유지</div>
   </div>
 
   <div class="rm-item rm-now">
     <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
     <div class="rm-badge badge-now">진행중</div>
-    <div class="rm-date">2026.06.28~</div>
-    <div class="rm-title">SoloHost 베타 🤖</div>
-    <div class="rm-desc rm-catalyst">💹 Pi Desktop에서 로컬 AI 앱 구동. 향후 35만+ 노드 분산컴퓨팅 → 노드 운영자 π 보상 구조 목표</div>
+    <div class="rm-date">2026.09.17~</div>
+    <div class="rm-title">KYC · 마이그레이션 개선 🔐</div>
+    <div class="rm-desc rm-catalyst">중복계정 재심사 통과 41.7만+ 명 KYC 재개, 가스 부족으로 정체된 Fast-Track 49.7만 명 해소 업데이트, 팜 프린트 1개월 시범 도입 (공식 9.17)</div>
   </div>
 
-  <!-- == 계획/기대 ==================== -->
-  <div class="rm-item rm-far">
+  <div class="rm-item rm-next">
     <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">3분기</div>
-    <div class="rm-date">2026.07~09</div>
-    <div class="rm-title">Launchpad dApp 본격 론칭 🚀</div>
-    <div class="rm-desc rm-catalyst">💹 SLICE 테스트넷 토큰 2차 검증 완료 → 메인넷 Launchpad 본격화 기대. Vibe Coder 캠페인으로 AI 제작 앱 유입 중</div>
+    <div class="rm-badge badge-soon">예정</div>
+    <div class="rm-date">11.17 (화) 16:00 UTC</div>
+    <div class="rm-title">Ecosystem Summit Day 1 🎤</div>
+    <div class="rm-desc rm-catalyst">개발자 플랫폼 · 생태계 이니셔티브 · 쇼케이스. YouTube 프리미어 8:00 AM PST (한국 11.18 01:00). 신규 기능·개발자 플랫폼 발표 예정 (공식 11.6)</div>
   </div>
 
-  <div class="rm-item rm-far">
+  <div class="rm-item rm-next">
     <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">4분기</div>
-    <div class="rm-date">2026.10~12</div>
-    <div class="rm-title">생태계 확장 · Pi Global Fund</div>
-    <div class="rm-desc rm-catalyst">💹 dApp 150개+ 목표. 글로벌 결제망 확대·Pi Global Fund 본격 운영·추가 거래소 상장 기대</div>
+    <div class="rm-badge badge-soon">예정</div>
+    <div class="rm-date">11.18 (수) 16:00 UTC</div>
+    <div class="rm-title">Ecosystem Summit Day 2 🤖</div>
+    <div class="rm-desc rm-catalyst">AI & 생태계 주제. YouTube 프리미어 8:00 AM PST (한국 11.19 01:00). 창립자 Chengdiao Fan·Nicolas Kokkalis 참여 (공식 11.6)</div>
   </div>
 
-  <div class="rm-item rm-far">
+  <div class="rm-item rm-next">
     <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">계획</div>
-    <div class="rm-date">일정 미발표</div>
-    <div class="rm-title">OpenMind 노드 AI연산 보상 🤖</div>
-    <div class="rm-desc rm-catalyst">💹 35만+ 노드 PoC 완료 — 노드가 로보틱스 AI 연산 제공, π 보상 수령 구조. 지급 일정은 코어팀 공식 미발표</div>
-  </div>
-
-  <div class="rm-item rm-now">
-    <div class="rm-dot-row"><div class="rm-dot">▶</div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-now">경과·확인중</div>
-    <div class="rm-date">2026.07.01</div>
-    <div class="rm-title">MiCA 데드라인 경과</div>
-    <div class="rm-desc rm-catalyst">💹 ESMA 등록(No.549)은 완료 상태. 최종 컴플라이언스 결과 공식발표 대기 — EU 기관 유입 여부 분수령</div>
-  </div>
-
-  <div class="rm-item rm-far">
-    <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">기대</div>
-    <div class="rm-date">2026 하반기</div>
-    <div class="rm-title">Binance 상장</div>
-    <div class="rm-desc rm-catalyst">💹 2025.02 커뮤니티 투표 86.8% 찬성(22.6만 표)에도 바이낸스는 코드 투명성·보안감사·탈중앙화 우려로 상장 보류 중 — 이후 공식 진전 발표 없음 (미확정)</div>
-  </div>
-
-  <div class="rm-item rm-far">
-    <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">기대</div>
-    <div class="rm-date">2026~2027</div>
-    <div class="rm-title">Coinbase · Upbit</div>
-    <div class="rm-desc rm-catalyst">💹 미국(Coinbase) · 한국(Upbit) 상장. MiCA 통과 시 글로벌 거래소 동반 확대 기대 (미확정)</div>
-  </div>
-
-  <div class="rm-item rm-far">
-    <div class="rm-dot-row"><div class="rm-dot"></div><div class="rm-line"></div></div>
-    <div class="rm-badge badge-plan">계획</div>
-    <div class="rm-date">날짜 미정</div>
-    <div class="rm-title">정식 오픈메인넷 완전 개방 · PiDAO</div>
-    <div class="rm-desc rm-catalyst">💹 방화벽 완전 해제·외부 체인 자유 연동·PiDAO 거버넌스. 코어팀 공식 일정 미발표 — 탈중앙화 최종 단계</div>
+    <div class="rm-badge badge-soon">예정</div>
+    <div class="rm-date">11.19 (목)</div>
+    <div class="rm-title">Day 3 · Pi Next 해커톤 킥오프 🏆</div>
+    <div class="rm-desc rm-catalyst">상금 풀 $200,000 USDT. 세부 상금 구조·트랙·참가 규정은 미공개, Day 3 시간도 공지되지 않음 (공식 11.6). 시청 무료: Pi 공식 YouTube</div>
   </div>
 
 </div><!-- /roadmap-wrap -->
@@ -1461,62 +1421,70 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     </div>
     <div class="pinews-live-wrap" id="pinewsFeed">
       <div class="pinews-item official">
-        <div class="pinews-date">06.28</div>
+        <div class="pinews-date">11.06</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Pi2Day 2026: 신제품 3종 공식 발표</div>
-          <div class="pinews-desc">SoloHost(로컬 AI 앱 플랫폼)·Pi Sign-in(외부앱 Pi 계정 로그인)·PiVerify(신원인증 B2B 서비스) 출시. "컴퓨트·아이덴티티·AI 인프라"로 전략 전환 공식화</div>
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Pi Ecosystem Summit 일정 공개 — 11.17~19 온라인 · Pi Next 해커톤 $200K <a href="https://minepi.com/blog/summit-schedule/" target="_blank" style="color:rgba(0,212,255,0.55);font-size:8.5px;text-decoration:none">→ 원문</a></div>
+          <div class="pinews-desc">Day1(11.17) 개발자 플랫폼·생태계 이니셔티브·쇼케이스 / Day2(11.18) AI & 생태계 — 각 8:00 AM PST YouTube 프리미어(한국 11.18·11.19 새벽 1시) / Day3(11.19) Pi Next 해커톤 킥오프, 상금 풀 $200,000 USDT. 세부 상금 구조·참가 규정은 미공개, 시청 무료</div>
           <div class="pinews-src">minepi.com 공식 블로그</div>
         </div>
       </div>
       <div class="pinews-item">
-        <div class="pinews-date">06.28</div>
+        <div class="pinews-date">11.09</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-eco">생태계</span>PiVerify — 1,800만+ KYC 인프라 외부 개방</div>
-          <div class="pinews-desc">외부 기업이 Pi의 인증 시스템을 유료(π 결제)로 이용 가능. 토큰 실수요 창출 구조 — 다만 초기 단계로 수요 규모는 미검증</div>
-          <div class="pinews-src">공식 발표 기반</div>
-        </div>
-      </div>
-      <div class="pinews-item">
-        <div class="pinews-date">06.30</div>
-        <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-market">시장</span>PI 사상 최저가 경신 — $0.12 부근 지지선 테스트</div>
-          <div class="pinews-desc">ATH($2.98, 2025.02) 대비 약 -96%. 6월 한 달 약 1.63억 π 언락 물량이 매도 압력으로 작용. 신제품 발표에도 시장 반응은 부정적</div>
-          <div class="pinews-src">CoinMarketCap·시장 데이터</div>
+          <div class="pinews-title"><span class="pinews-tag tag-market">시장</span>PI $0.0697 · 24시간 -3.9% · 시총 약 $7.9억</div>
+          <div class="pinews-desc">ATH($2.98, 2025.02) 대비 약 -97.7%. 10월 말~11월 초 $0.07~0.08 박스권에서 소폭 하락</div>
+          <div class="pinews-src">CoinGecko 2026.11.09</div>
         </div>
       </div>
       <div class="pinews-item official">
-        <div class="pinews-date">06.25</div>
+        <div class="pinews-date">10.29</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Vibe Coder 캠페인·SLICE 테스트 마감 (6.28)</div>
-          <div class="pinews-desc">AI 제작 앱 유치 캠페인과 Launchpad 2차 테스트넷 토큰(SLICE) 검증 완료. SLICE는 메인넷 미출시 학습용</div>
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>개발자 플랫폼 업데이트 — Developer Portal 개편·PiVerify 확대 <a href="https://minepi.com/blog/developer-platform-updates/" target="_blank" style="color:rgba(0,212,255,0.55);font-size:8.5px;text-decoration:none">→ 원문</a></div>
+          <div class="pinews-desc">BlockExplorer가 Launchpad 테스트넷 토큰(SLICE) 가격 추적 시작(메인넷 아님). SoloHost 앱 패키징 AI 스킬 공개, PiVerify에 얼굴 고유성·다중 liveness 추가. SoloHost로 접근 가능한 노드 42만+</div>
           <div class="pinews-src">minepi.com 공식 블로그</div>
         </div>
       </div>
       <div class="pinews-item">
-        <div class="pinews-date">06.18</div>
+        <div class="pinews-date">10.28</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-eco">생태계</span>생태계 앱 통합 리프레시</div>
-          <div class="pinews-desc">Pi Browser·Wallet·DEX·Launchpad 핵심 앱 동시 업데이트 — 스마트컨트랙트 시대 대비 정비</div>
-          <div class="pinews-src">공식 업데이트</div>
+          <div class="pinews-title"><span class="pinews-tag tag-eco">생태계</span>Pi Network Ventures, Axis Robotics 시드 투자 참여</div>
+          <div class="pinews-desc">피지컬 AI 스타트업 Axis Robotics 시드 라운드(약 $1,200만, Hack VC 주도) 참여가 보도됨. 투자 주체(코어팀 vs Pi Network Ventures) 표기는 매체별로 다름 — PI 가격·Pioneer 수익에 대한 직접 영향은 없다는 분석</div>
+          <div class="pinews-src">FXStreet 등 보도 (Core Team 공식 확인 미발견)</div>
         </div>
       </div>
       <div class="pinews-item official">
-        <div class="pinews-date">06.02</div>
+        <div class="pinews-date">10.22</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Protocol v24.1 노드 의무 업그레이드 완료</div>
-          <div class="pinews-desc">전체 메인넷 노드 대상. v23 → v24.1 순차 로드맵의 일환으로 블록체인 성능·탈중앙화 기반 강화</div>
-          <div class="pinews-src">공식 발표</div>
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Pi Desktop 0.6.4 — SoloHost 원격 접속 간소화 <a href="https://minepi.com/blog/solohost-pi-desktop-0-6-4/" target="_blank" style="color:rgba(0,212,255,0.55);font-size:8.5px;text-decoration:none">→ 원문</a></div>
+          <div class="pinews-desc">공유기 설정·포트 개방 없이 원격 접속, 앱이 자기 파일·네트워크 범위만 쓰도록 설치 전·실행 시 검사 강화</div>
+          <div class="pinews-src">minepi.com 공식 블로그</div>
         </div>
       </div>
-      <div class="pinews-item">
-        <div class="pinews-date">07.01</div>
+      <div class="pinews-item official">
+        <div class="pinews-date">10.16</div>
         <div class="pinews-body">
-          <div class="pinews-title"><span class="pinews-tag tag-market">규제</span>MiCA 최종 컴플라이언스 데드라인 경과</div>
-          <div class="pinews-desc">ESMA 등록(No.549)은 완료 상태. 최종 결과 공식 발표 대기 중 — EU 기관자금 유입 여부의 분수령</div>
-          <div class="pinews-src">ESMA 공시 기준</div>
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>Protocol 28 메인넷 전환 (노드 마감 10.13)</div>
+          <div class="pinews-desc">지연 트랜잭션 처리 개선·스마트컨트랙트 일괄 업그레이드. 코어팀이 10.22 전환 완료 확인(보도). 노드 준수율·앱 사용 지표는 미공개. 앞서 Protocol 27은 9월 적용</div>
+          <div class="pinews-src">공식 발표 · 2차 보도 확인</div>
+        </div>
+      </div>
+      <div class="pinews-item official">
+        <div class="pinews-date">10.15</div>
+        <div class="pinews-body">
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>첫 Pi Ecosystem Summit 발표 — 11.17~19 온라인 <a href="https://minepi.com/blog/introducing-ecosystem-summit/" target="_blank" style="color:rgba(0,212,255,0.55);font-size:8.5px;text-decoration:none">→ 원문</a></div>
+          <div class="pinews-desc">플랫폼 릴리스·개발자 데모·앱 쇼케이스·코어팀 대화 + 신규 해커톤 소개. 상금·등록 방식은 미공개</div>
+          <div class="pinews-src">minepi.com 공식 블로그</div>
+        </div>
+      </div>
+      <div class="pinews-item official">
+        <div class="pinews-date">10.08</div>
+        <div class="pinews-body">
+          <div class="pinews-title"><span class="pinews-tag tag-official">공식</span>스테이블코인 접근 방식 — Open Standard(OUSD) 협력 <a href="https://minepi.com/blog/pi-stablecoins/" target="_blank" style="color:rgba(0,212,255,0.55);font-size:8.5px;text-decoration:none">→ 원문</a></div>
+          <div class="pinews-desc">Pioneer 보상·생태계 활용 탐색 단계. 출시일·구조·보상 내용은 미발표이며 PI는 핵심 자산으로 유지</div>
+          <div class="pinews-src">minepi.com 공식 블로그</div>
         </div>
       </div></div>
-    <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:7px;text-align:right" id="pinewsUpd">기준: 2026.07.02 큐레이션 (제니 팩트체크)</div>
+    <div style="color:rgba(255,255,255,0.18);font-size:8px;margin-top:7px;text-align:right" id="pinewsUpd">기준: 2026.11.09 큐레이션 (제니 팩트체크 · 공식 블로그·CoinGecko 대조)</div>
   <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
 </div>
 
@@ -1556,38 +1524,38 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:12px 0 2px">PI AI/COMPUTE 접점 — SoloHost · PiVerify · Node Compute</div>
     <div class="intel-grid-3" id="intelPiGrid"></div>
 
-    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:13px">
+    <div class="intel-two">
       <!-- 7 Economic KPIs -->
       <div>
         <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin-bottom:6px">7대 경제 KPI — 실시간 체크 + 데일리 확정</div>
         <div id="intelKpiList"></div>
       </div>
-      <!-- Readiness framework -->
-      <div>
+      <!-- Readiness framework + 신호 변경 이력 + 범례 (오른쪽 열에 쌓아 빈 공간 제거) -->
+      <div class="intel-right">
         <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin-bottom:6px">PI $1 / $3 / $5 / $10 READINESS (실시간가 자동반영)</div>
         <div id="intelReadyList"></div>
+
+        <!-- 신호 변경 이력 -->
+        <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:6px 0 2px">신호 변경 이력 — 전일 대비 새 변화 우선 기록</div>
+        <div class="intel-log" id="intelLogList"></div>
+
+        <div class="intel-lvleg">
+          <span>Evidence Level:</span>
+          <span class="intel-lv intel-lv0">Lv0 Rumor</span>
+          <span class="intel-lv intel-lv1">Lv1 Technical</span>
+          <span class="intel-lv intel-lv2">Lv2 Personnel</span>
+          <span class="intel-lv intel-lv3">Lv3 Commercial</span>
+          <span class="intel-lv intel-lv4">Lv4 Official</span>
+          <span class="intel-lv intel-lv5">Lv5 Economic</span>
+        </div>
+        <div class="intel-lvleg" style="margin-top:4px">
+          <span>신뢰도:</span>
+          <span class="intel-trust-rumor">미확인 루머</span>
+          <span class="intel-trust-interp">해석·추정</span>
+          <span class="intel-trust-signal">신뢰 신호</span>
+          <span class="intel-trust-fact">확인된 사실</span>
+        </div>
       </div>
-    </div>
-
-    <!-- 신호 변경 이력 -->
-    <div style="font-size:9.5px;color:rgba(0,212,255,0.5);letter-spacing:1.5px;font-weight:700;margin:13px 0 2px">신호 변경 이력 — 전일 대비 새 변화 우선 기록</div>
-    <div class="intel-log" id="intelLogList"></div>
-
-    <div class="intel-lvleg">
-      <span>Evidence Level:</span>
-      <span class="intel-lv intel-lv0">Lv0 Rumor</span>
-      <span class="intel-lv intel-lv1">Lv1 Technical</span>
-      <span class="intel-lv intel-lv2">Lv2 Personnel</span>
-      <span class="intel-lv intel-lv3">Lv3 Commercial</span>
-      <span class="intel-lv intel-lv4">Lv4 Official</span>
-      <span class="intel-lv intel-lv5">Lv5 Economic</span>
-    </div>
-    <div class="intel-lvleg" style="margin-top:4px">
-      <span>신뢰도:</span>
-      <span class="intel-trust-rumor">미확인 루머</span>
-      <span class="intel-trust-interp">해석·추정</span>
-      <span class="intel-trust-signal">신뢰 신호</span>
-      <span class="intel-trust-fact">확인된 사실</span>
     </div>
 
     <!-- Source Notes -->
@@ -1595,7 +1563,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div class="intel-src-row">
       <a class="intel-src-link" href="https://blog.kraken.com/" target="_blank" rel="noopener">⬡ Kraken Blog — "PI is available for trading!" (2026-03-13)</a>
       <a class="intel-src-link" href="https://www.kraken.com/" target="_blank" rel="noopener">⬡ Kraken — PI 시장/거래 페이지</a>
-      <a class="intel-src-link" href="https://minepi.com/blog/" target="_blank" rel="noopener">⬡ Pi 공식 블로그 — SoloHost Updates (Pi Desktop 0.6.3, 2026-09-09)</a>
+      <a class="intel-src-link" href="https://minepi.com/blog/solohost-pi-desktop-0-6-4/" target="_blank" rel="noopener">⬡ Pi 공식 블로그 — SoloHost Updates (Pi Desktop 0.6.4, 2026-10-22)</a>
       <span class="intel-src-plain">📄 창립자/로드맵/Pi2Day/Ventures/OpenMind 자료 — 비공개 리서치 원자료 (링크 없음)</span>
     </div>
 
@@ -1609,7 +1577,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
   <div class="ticker-inner" id="tickerInner">
     <span class="ticker-item" style="color:var(--gold)">⬡ PI/USDT <span id="t_pi">$0.0821</span></span>
     <span class="ticker-sep">│</span>
-    <span class="ticker-item" style="color:var(--neon)">💱 USD/KRW <span id="t_krw">₩1,461</span></span>
+    <span class="ticker-item" style="color:var(--neon)">💱 USD/KRW <span id="t_krw">₩1,344</span></span>
     <span class="ticker-sep">│</span>
     <span class="ticker-item" style="color:var(--green)">💰 부부합산 평가액 <span id="t_val">₩3,717,006</span></span>
     <span class="ticker-sep">│</span>
@@ -1622,7 +1590,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <!-- duplicate for seamless loop -->
     <span class="ticker-item" style="color:var(--gold)">⬡ PI/USDT <span id="t_pi2">$0.0821</span></span>
     <span class="ticker-sep">│</span>
-    <span class="ticker-item" style="color:var(--neon)">💱 USD/KRW <span id="t_krw2">₩1,461</span></span>
+    <span class="ticker-item" style="color:var(--neon)">💱 USD/KRW <span id="t_krw2">₩1,344</span></span>
     <span class="ticker-sep">│</span>
     <span class="ticker-item" style="color:var(--green)">💰 부부합산 평가액 <span id="t_val2">₩3,717,006</span></span>
     <span class="ticker-sep">│</span>
@@ -1873,7 +1841,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
     <div style="font-size:10.5px;font-weight:700;color:var(--text)">✓ 유선 랜 + SSD</div>
     <div style="font-size:9.5px;color:rgba(255,255,255,.4);line-height:1.6">와이파이/HDD보다 블록 동기화 속도와 안정성이 크게 좋아집니다.</div></div><div style="border-left:2px solid var(--green);padding:5px 0 5px 9px;margin-bottom:5px">
     <div style="font-size:10.5px;font-weight:700;color:var(--text)">✓ 최신 버전 유지</div>
-    <div style="font-size:9.5px;color:rgba(255,255,255,.4);line-height:1.6">구버전은 점수 집계 제외 — v26.0 활성화 완료, 최신 버전 유지 필수.</div></div></div>
+    <div style="font-size:9.5px;color:rgba(255,255,255,.4);line-height:1.6">구버전은 점수 집계 제외 — v28 활성화 완료(2026.10.16), 최신 버전 유지 필수.</div></div></div>
   <div class="hud-c tl"></div><div class="hud-c tr"></div><div class="hud-c bl"></div><div class="hud-c br"></div></div>
 </div>
 
@@ -2043,7 +2011,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}</style></head>
 const CFG = {
   piHoldings: 29523,   // 부부 합산 보유 파이
   piGoal:     50000,   // 최종 목표 파이
-  usdKrw:     1380,    // 기본 환율 (자동 갱신)
+  usdKrw:     1344,    // 기본 환율 (자동 갱신) — 2026.11.04 기준 1,344
 
   monthlyGoal: 10_000_000,
 
@@ -2076,7 +2044,7 @@ const CFG = {
    STATE
    ================================================================ */
 const S = {
-  piUsd: 0.170,
+  piUsd: 0.0734, /* 2026.11.04 CoinGecko 기준 (자동 갱신 전 임시값) */
   usdKrw: CFG.usdKrw,
   src: '추정가',
   loading: false,
@@ -2173,6 +2141,7 @@ setInterval(renderLockups, 1000);
    마이그레이션 기록 (2차 이후 N차까지 반복 입력 · 가족별 다건 관리)
    ================================================================ */
 const MIG_PEOPLE = ['사장님','아내','큰아들','작은아들'];
+const MIG_RELOCK = ['큰아들','작은아들']; /* 입금 후 실사용 대신 재락업 설정 상태로 표시 */
 const MIG_ICONS = {'사장님':'👨‍💼','아내':'👩‍💼','큰아들':'💻','작은아들':'🪖'};
 const MIG_HOLD_DAYS = 14;
 const MIG_KEY = 'piMigrationHistory_v1';
@@ -2329,7 +2298,9 @@ function renderMigrations(){
         rightHtml = `<span class="mg-badge wait">⏳ 대기중</span>`;
       } else if (latestDone){
         mainLine = `${latestDone.round}차 입금 ${latestDone.arrived}`;
-        rightHtml = `<span class="mg-badge done">✅ 실사용 가능</span>`;
+        rightHtml = MIG_RELOCK.includes(p)
+          ? `<span class="mg-badge relock">🔒 재락업 설정</span>`
+          : `<span class="mg-badge done">✅ 실사용 가능</span>`;
       }
 
       return `<div class="lk-row${activeHolding?' lk-next':''}">
@@ -2761,7 +2732,7 @@ function renderMarket() {
    홀로그램 브리핑 — 라이브 엔진 (코어팀·생태계 소식 자동 수집)
    ================================================================ */
 const JB_COLS = ['#00d4ff','#00e896','#c8ff40','#c060ff','#ff7b2e','#ffd700'];
-const JB_MAX_AGE = 30*86400000; /* 30일 이내만 — pinews 피드와 동일 기준 */
+const JB_MAX_AGE = 14*86400000; /* 브리핑은 최근 2주 기사만 */
 
 function jbRel(d){
   const m = Math.round((Date.now()-d)/60000);
@@ -2770,16 +2741,24 @@ function jbRel(d){
   return Math.round(h/24)+'일 전';
 }
 
+/* 항상 맨 위에 고정: 현재 프로토콜·Pi Desktop 버전 (새 버전 나오면 여기만 수정) */
+function jbPinned(){
+  return [
+    {col:'#00e896', t:'현재 버전', m:'🌐 Protocol v28 메인넷 적용 중 (10.16 전환)'},
+    {col:'#c8ff40', t:'현재 버전', m:'📡 Pi Desktop 0.6.4 (10.22) — 포트 개방 없이 SoloHost 원격 접속 · 접근 가능 노드 42만+'},
+  ];
+}
 function jbFallbackItems(){
   const dLeft = Math.max(0, Math.ceil((new Date(CFG.pi2day)-new Date())/86400000));
   return [
-    {col:'#00d4ff', t:'2026.07', m:'🛠 코어팀: App Studio 대형 업그레이드 — AI 기획 지원 + 앱 영구저장 도입 (공식)'},
-    {col:'#00e896', t:'2026.06', m:'🌐 Protocol v26.0 활성화 완료 — 2026 프로토콜 시퀀스(v23~v26) 마무리 (공식)'},
-    {col:'#c8ff40', t:'2026.06', m:'📡 활성 노드 42.1만 대 · 메인넷 마이그레이션 100억 π 돌파'},
-    {col:'#c060ff', t:'2026.06', m:'💠 Ecosystem Directory Staking 개편 — 생태계 앱 지원 구조 강화'},
+    ...jbPinned(),
+    {col:'#00d4ff', t:'2026.10', m:'🛠 개발자 플랫폼 업데이트 — Developer Portal 개편·PiVerify 얼굴 고유성 체크 추가 (공식 10.29)'},
+    {col:'#c060ff', t:'2026.11', m:'🎤 첫 Pi Ecosystem Summit 11.17~19 (온라인) — 신규 해커톤 소개 예정 (공식)'},
     {col:'#ff7b2e', t:'오늘',    m:`📅 Pi2Day 2027 D-${dLeft} — 다음 공식 마일스톤 카운트다운`},
   ];
 }
+/* 옛 프로토콜(v1x~v27)·옛 Pi Desktop(0.x 구버전)·가격 예측성 기사는 브리핑에서 제외 */
+const JB_STALE = /\bv(?:ersion)?\s?(?:1\d|2[0-7])\b|protocol\s?(?:v\s?)?(?:1\d|2[0-7])\b|desktop\s?v?0\.[0-5]\.|desktop\s?v?0\.6\.[0-3]\b|price (?:prediction|forecast|update|outlook|analysis|today)|가격\s?(?:전망|예측)|반등하나|돌파 시도|최저가|떨어지나|double-bottom|reversal|record low|extend gains/i;
 
 function jbRender(items){
   const feed = document.getElementById('newsFeed');
@@ -2833,18 +2812,19 @@ async function jbLive(){
     const seen = new Set();
     pool = pool.filter(x=>{
       if(!x.t || isNaN(x.d) || (Date.now()-x.d) > JB_MAX_AGE) return false;
+      if(JB_STALE.test(x.t) || /pi desktop/i.test(x.t)) return false; /* Desktop 버전은 위에 고정 표시 */
       const key = x.t.slice(0,30);
       if(seen.has(key)) return false;
       seen.add(key); return true;
-    }).sort((a,b)=>b.d-a.d).slice(0,5);
+    }).sort((a,b)=>b.d-a.d).slice(0,3);
     if(!pool.length) return; /* 실패 시 폴백 유지 */
-    jbRender(pool.map((x,i)=>{
+    jbRender(jbPinned().concat(pool.map((x,i)=>{
       let title = x.t, src = '';
       const cut = title.lastIndexOf(' - ');
       if(cut>10){ src = title.slice(cut+3); title = title.slice(0,cut); }
       return {col: JB_COLS[i%JB_COLS.length], t: jbRel(x.d),
               m: '📰 '+title.replace(/</g,'&lt;'), src: src.replace(/</g,'&lt;'), link: x.l};
-    }));
+    })));
   }catch(e){ /* 폴백 유지 */ }
 }
 
@@ -2874,7 +2854,7 @@ const INTEL_STRAT = [
   {key:'stanford', nm:'Stanford Network (창립자·OpenMind 연결)', en:'Ecosystem Contact', q:'"Pi Network" Stanford'},
 ];
 const INTEL_PI = [
-  {key:'solohost',    nm:'SoloHost (로컬 AI 앱 플랫폼)',       en:'Pi Desktop 0.6.3 · 2026-09-09', q:'"Pi Network" SoloHost'},
+  {key:'solohost',    nm:'SoloHost (로컬 AI 앱 플랫폼)',       en:'Pi Desktop 0.6.4 · 2026-10-22', q:'"Pi Network" SoloHost'},
   {key:'piverify',    nm:'PiVerify / Sign-in (외부 KYC 개방)', en:'1,800만+ KYC 인프라',           q:'"Pi Network" PiVerify'},
   {key:'nodecompute', nm:'Node Compute (외부 workload PoC)',  en:'OpenMind 투자 연계',             q:'"Pi Network" "Node Compute" OpenMind'},
 ];
@@ -3317,40 +3297,49 @@ async function fetchKRWRate() {
 
 /* ================================================================
    Pi Network 최신소식 시스템
-   - 기본: 팩트체크된 큐레이션 뉴스 (2026.07.02 기준)
+   - 기본: 팩트체크된 큐레이션 뉴스 (2026.11.04 기준)
    - 갱신 버튼: Google News RSS → rss2json 변환으로 실시간 시도
    ================================================================ */
 
 // 팩트체크 완료된 공식/시장 소식 (제니 큐레이션) — 30일 초과 시 자동으로 화면에서 제외됨
 const PI_NEWS_CURATED = [
-  {date:'06.28', dateISO:'2026-06-28', tag:'official', tagLbl:'공식',
-   title:'Pi2Day 2026: 신제품 3종 공식 발표',
-   desc:'SoloHost(로컬 AI 앱 플랫폼)·Pi Sign-in(외부앱 Pi 계정 로그인)·PiVerify(신원인증 B2B 서비스) 출시. "컴퓨트·아이덴티티·AI 인프라"로 전략 전환 공식화',
-   src:'minepi.com 공식 블로그'},
-  {date:'06.28', dateISO:'2026-06-28', tag:'eco', tagLbl:'생태계',
-   title:'PiVerify — 1,800만+ KYC 인프라 외부 개방',
-   desc:'외부 기업이 Pi의 인증 시스템을 유료(π 결제)로 이용 가능. 토큰 실수요 창출 구조 — 다만 초기 단계로 수요 규모는 미검증',
-   src:'공식 발표 기반'},
-  {date:'06.30', dateISO:'2026-06-30', tag:'market', tagLbl:'시장',
-   title:'PI 사상 최저가 경신 — $0.12 부근 지지선 테스트',
-   desc:'ATH($2.98, 2025.02) 대비 약 -96%. 6월 한 달 약 1.63억 π 언락 물량이 매도 압력으로 작용. 신제품 발표에도 시장 반응은 부정적',
-   src:'CoinMarketCap·시장 데이터'},
-  {date:'06.25', dateISO:'2026-06-25', tag:'official', tagLbl:'공식',
-   title:'Vibe Coder 캠페인·SLICE 테스트 마감 (6.28)',
-   desc:'AI 제작 앱 유치 캠페인과 Launchpad 2차 테스트넷 토큰(SLICE) 검증 완료. SLICE는 메인넷 미출시 학습용',
-   src:'minepi.com 공식 블로그'},
-  {date:'06.18', dateISO:'2026-06-18', tag:'eco', tagLbl:'생태계',
-   title:'생태계 앱 통합 리프레시',
-   desc:'Pi Browser·Wallet·DEX·Launchpad 핵심 앱 동시 업데이트 — 스마트컨트랙트 시대 대비 정비',
-   src:'공식 업데이트'},
-  {date:'06.02', dateISO:'2026-06-02', tag:'official', tagLbl:'공식',
-   title:'Protocol v24.1 노드 의무 업그레이드 완료',
-   desc:'전체 메인넷 노드 대상. v23 → v24.1 순차 로드맵의 일환으로 블록체인 성능·탈중앙화 기반 강화',
-   src:'공식 발표'},
-  {date:'07.01', dateISO:'2026-07-01', tag:'market', tagLbl:'규제',
-   title:'MiCA 최종 컴플라이언스 데드라인 경과',
-   desc:'ESMA 등록(No.549)은 완료 상태. 최종 결과 공식 발표 대기 중 — EU 기관자금 유입 여부의 분수령',
-   src:'ESMA 공시 기준'},
+  {date:'11.09', dateISO:'2026-11-09', tag:'market', tagLbl:'시장',
+   title:'PI $0.0697 · 24시간 -3.9% · 시총 약 $7.9억',
+   desc:'ATH($2.98, 2025.02) 대비 약 -97.7%. 10월 말~11월 초 $0.07~0.08 박스권에서 소폭 하락',
+   src:'CoinGecko 2026.11.09'},
+  {date:'11.06', dateISO:'2026-11-06', tag:'official', tagLbl:'공식',
+   title:'Pi Ecosystem Summit 일정 공개 — 11.17~19 온라인 · Pi Next 해커톤 $200K',
+   desc:'Day1(11.17) 개발자 플랫폼·생태계 이니셔티브·쇼케이스 / Day2(11.18) AI & 생태계 — 각 8:00 AM PST YouTube 프리미어(한국 11.18·11.19 새벽 1시) / Day3(11.19) Pi Next 해커톤 킥오프, 상금 풀 $200,000 USDT. 세부 상금 구조·참가 규정은 미공개, 시청 무료',
+   src:'minepi.com 공식 블로그',
+   url:'https://minepi.com/blog/summit-schedule/'},
+  {date:'10.29', dateISO:'2026-10-29', tag:'official', tagLbl:'공식',
+   title:'개발자 플랫폼 업데이트 — Developer Portal 개편·PiVerify 확대',
+   desc:'BlockExplorer가 Launchpad 테스트넷 토큰(SLICE) 가격 추적 시작(메인넷 아님). SoloHost 앱 패키징 AI 스킬 공개, PiVerify에 얼굴 고유성·다중 liveness 추가. SoloHost로 접근 가능한 노드 42만+',
+   src:'minepi.com 공식 블로그',
+   url:'https://minepi.com/blog/developer-platform-updates/'},
+  {date:'10.28', dateISO:'2026-10-28', tag:'eco', tagLbl:'생태계',
+   title:'Pi Network Ventures, Axis Robotics 시드 투자 참여',
+   desc:'피지컬 AI 스타트업 Axis Robotics 시드 라운드(약 $1,200만, Hack VC 주도) 참여가 보도됨. 투자 주체(코어팀 vs Pi Network Ventures) 표기는 매체별로 다름 — PI 가격·Pioneer 수익에 대한 직접 영향은 없다는 분석',
+   src:'FXStreet 등 보도 (Core Team 공식 확인 미발견)'},
+  {date:'10.22', dateISO:'2026-10-22', tag:'official', tagLbl:'공식',
+   title:'Pi Desktop 0.6.4 — SoloHost 원격 접속 간소화',
+   desc:'공유기 설정·포트 개방 없이 원격 접속, 앱이 자기 파일·네트워크 범위만 쓰도록 설치 전·실행 시 검사 강화',
+   src:'minepi.com 공식 블로그',
+   url:'https://minepi.com/blog/solohost-pi-desktop-0-6-4/'},
+  {date:'10.16', dateISO:'2026-10-16', tag:'official', tagLbl:'공식',
+   title:'Protocol 28 메인넷 전환 (노드 마감 10.13)',
+   desc:'지연 트랜잭션 처리 개선·스마트컨트랙트 일괄 업그레이드. 코어팀이 10.22 전환 완료 확인(보도). 노드 준수율·앱 사용 지표는 미공개. 앞서 Protocol 27은 9월 적용',
+   src:'공식 발표 · 2차 보도 확인'},
+  {date:'10.15', dateISO:'2026-10-15', tag:'official', tagLbl:'공식',
+   title:'첫 Pi Ecosystem Summit 발표 — 11.17~19 온라인',
+   desc:'플랫폼 릴리스·개발자 데모·앱 쇼케이스·코어팀 대화 + 신규 해커톤 소개. 상금·등록 방식은 미공개',
+   src:'minepi.com 공식 블로그',
+   url:'https://minepi.com/blog/introducing-ecosystem-summit/'},
+  {date:'10.08', dateISO:'2026-10-08', tag:'official', tagLbl:'공식',
+   title:'스테이블코인 접근 방식 — Open Standard(OUSD) 협력',
+   desc:'Pioneer 보상·생태계 활용 탐색 단계. 출시일·구조·보상 내용은 미발표이며 PI는 핵심 자산으로 유지',
+   src:'minepi.com 공식 블로그',
+   url:'https://minepi.com/blog/pi-stablecoins/'},
 ];
 
 /* 30일 초과 소식은 화면에서 자동 제외 */
@@ -3405,7 +3394,9 @@ async function fetchPiNews() {
     if (r.ok) {
       const d = await r.json();
       if (d.status === 'ok' && d.items?.length > 0) {
-        const liveItems = d.items.slice(0, 8).map(it => {
+        /* 가격 예측성·옛 버전 기사는 제외하고, 공식 큐레이션을 함께 표시 (최신순) */
+        const liveRaw = d.items.filter(it => !JB_STALE.test(it.title || '')).slice(0, 8);
+        const liveItems = liveRaw.map(it => {
           const dt = new Date(it.pubDate);
           const dateStr = String(dt.getMonth()+1).padStart(2,'0') + '.' + String(dt.getDate()).padStart(2,'0');
           return {
@@ -3417,7 +3408,11 @@ async function fetchPiNews() {
             url: it.link,
           };
         });
-        renderPiNews(liveItems, true);
+        const ts = it => (it.d instanceof Date) ? it.d.getTime() : Date.parse(it.dateISO || '');
+        const merged = PI_NEWS_CURATED.filter(c => c.tag === 'official')
+          .concat(liveItems).filter(withinPiNewsWindow)
+          .sort((a, b) => ts(b) - ts(a)).slice(0, 8);
+        renderPiNews(merged, true);
         const upd = document.getElementById('pinewsUpd');
         if (upd) upd.textContent = '실시간 갱신: ' + new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}) + ' · Google News (최근 30일 · 10분마다 자동갱신)';
         ok = true;
@@ -3900,16 +3895,6 @@ document.addEventListener('keydown', e => {
     startAssetPulse();          // 에셋 펄스 시작
     setTimeout(addHudBrackets, 200); // 전체 카드 HUD 브래킷
 
-  // 로드맵 D-day 계산
-  try {
-    const d23 = Math.max(0, Math.ceil((new Date('2026-05-18') - new Date()) / 86400000));
-    const rmd23 = document.getElementById('rm_d23');
-    if (rmd23) rmd23.textContent = d23;
-    const rmpid = document.getElementById('rm_pi2d');
-    const rmmica = document.getElementById('rm_mica');
-    if (rmmica) rmmica.textContent = Math.max(0, Math.ceil((new Date('2026-07-01') - new Date()) / 86400000));
-    if (rmpid) rmpid.textContent = Math.max(0, Math.ceil((new Date('2026-06-28') - new Date()) / 86400000));
-  } catch(e) {}
   } catch(e) { console.error('Init error:', e); }
 })();
 </script>
@@ -4193,7 +4178,6 @@ setInterval(jxRenderPace, 60000);
 /* ================================================================
    ⬡ JX LIVE+ — 실시간 갱신 강화 모듈
    ================================================================ */
-/* v26.0 활성화 완료 — D-day 코드 제거 (2026.07.16) */
 
 /* 마켓 스냅샷 백필: CMC 차단 시 CoinGecko 풀데이터로 변동률·시총·거래량 채움 */
 async function jxBackfillMarket(){
@@ -4322,9 +4306,14 @@ function dpForecast(){
 /* ---------- 주간 채굴량 랭킹 (최근 최대 8개 기록 = 약 1주일간 실제 채굴량) ---------- */
 function dpRank(){
   const el=document.getElementById('dpRank'); if(!el) return;
-  const H=HISTD().slice(-8);
-  if(H.length<2){ el.innerHTML=''; return; }
-  const f=H[0], l=H[H.length-1];
+  /* "최근 8개 기록"이 아니라 "최근 7일"로 필터링 — 저장을 매일 하지 않으면
+     8개 기록이 1주일보다 훨씬 긴 기간을 가리켜 채굴량이 부풀려지는 버그가 있었음 */
+  const H = HISTD();
+  if (!H.length) { el.innerHTML=''; return; }
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-7); cutoff.setHours(0,0,0,0);
+  const win = H.filter(e=> new Date(e.date+'T00:00:00') >= cutoff);
+  if (win.length<2){ el.innerHTML=''; return; }
+  const f=win[0], l=win[win.length-1];
   const medal=['🥇','🥈','🥉','🏅'];
   const ranks=NAMES.map((n,m)=>({n: LANG_EN?NAMES_EN[m]:n, g:(l.nodes[m]?.pi||0)-(f.nodes[m]?.pi||0)})).sort((a,b)=>b.g-a.g);
   el.innerHTML=`<div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:5px">${T('주간 채굴량 랭킹','Weekly mining volume ranking')}</div>`+
@@ -4349,12 +4338,12 @@ function dpNode(){
     ['24/7 uptime','Uptime factor compounds daily — disable PC sleep, enable auto-restart.'],
     ['Open ports 31400–31409','Port factor is a big multiplier — set router port-forwarding to the node PC.'],
     ['Wired LAN + SSD','Beats Wi-Fi/HDD for block sync speed and stability.'],
-    ['Stay on latest version','Old protocols stop counting — v26.0 is live; always stay on the latest.'],
+    ['Stay on latest version','Old protocols stop counting — v28 is live (since 2026-10-16); always stay on the latest.'],
   ]:[
     ['24시간 무중단 가동','가동시간 계수는 매일 복리처럼 쌓입니다 — 절전모드 해제·자동 재시작 설정.'],
     ['포트 31400~31409 개방','포트 계수는 큰 배수예요 — 공유기에서 노드 PC로 포트포워딩.'],
     ['유선 랜 + SSD','와이파이/HDD보다 블록 동기화 속도와 안정성이 크게 좋아집니다.'],
-    ['최신 버전 유지','구버전은 점수 집계 제외 — v26.0 활성화 완료, 최신 버전 유지 필수.'],
+    ['최신 버전 유지','구버전은 점수 집계 제외 — v28 활성화 완료(2026.10.16), 최신 버전 유지 필수.'],
   ];
   tEl.innerHTML=tips.map(t=>`<div style="border-left:2px solid var(--green);padding:5px 0 5px 9px;margin-bottom:5px">
     <div style="font-size:10.5px;font-weight:700;color:var(--text)">✓ ${t[0]}</div>
@@ -4406,25 +4395,16 @@ function isOnTopic(title){
   const t=(title||'').toLowerCase();
   return PI_TERMS.some(k=>t.includes(k)) && ROBOT_TERMS.some(k=>t.includes(k));
 }
-/* 조사 확인된 로봇경제+pi 관련 소식 (실시간 검색에 안 걸릴 때의 큐레이션 대체용)
-   ⚠ RoboPay 파트너십은 2026-08-05 Fabric Foundation측 주장이며, minepi.com 공식 블로그에는
-   게시된 바 없고 Pi Core Team의 공식 확인도 없는 상태 — "미확인은 미확인으로" 원칙에 따라
-   모든 항목에 미확인 표시를 강제로 붙임 */
-const JN_CURATED=[
-  {t:'파이 네트워크, "RoboPay" 로봇 서비스 결제 파트너십 합류설 — Pi Core Team 공식 확인은 아직 없음',
-   l:'https://www.bitget.com/news/detail/12560605616065',
-   d:new Date('2026-08-05T18:30:00+09:00'), s:'Bitget News(Coinpedia 인용)', rumor:true},
-  {t:'RoboPay란? — "AI 에이전트가 로봇을 고용·조율·결제"하는 Fabric 프로토콜 기반 온체인 인프라, Pi의 2025년 OpenMind 투자와 연결된 확장 관계로 소개됨',
-   l:'https://www.coingabbar.com/en/crypto-currency-news/pi-network-news-robopay-robot-services-payment-partnership',
-   d:new Date('2026-08-05T09:00:00+09:00'), s:'CoinGabbar', rumor:true},
-  {t:'RoboPay 파트너십, 커뮤니티 재게시 이후 실질적 진전 없음 — 일정·기술 세부사항 모두 공식 확인 대기 중',
-   l:'https://www.hokanews.com/2026/08/pi-network-robopay-partnership-update.html',
-   d:new Date('2026-08-06T09:00:00+09:00'), s:'Hokanews', rumor:true},
-];
+/* 실시간 검색에 걸린 최근 30일 기사만 표시 (지난·미확인 소문성 기사는 두지 않음) */
+const JN_CURATED=[];
 function renderJnList(items, curated){
   const list=document.getElementById('jnList');
   if(!list) return;
   window._jnItems=items;
+  if(!items.length){
+    list.innerHTML='<div style="color:rgba(255,255,255,.35);font-size:10.5px;text-align:center;padding:14px 0">최근 30일 내 관련 소식이 없어요</div>';
+    return;
+  }
   list.innerHTML=items.map((x,i)=>{
     let title=x.t, src=x.s;
     const cut=title.lastIndexOf(' - ');
@@ -4478,23 +4458,21 @@ window.jnFetch=async function(manual){
   const upd=document.getElementById('jnLastUpd');
   const stamp=()=>{ const n=new Date(); return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); };
   try{
-    const JN_MAX_AGE = 90*86400000; /* 3개월 초과 기사 제외 */
+    const JN_MAX_AGE = 30*86400000; /* 30일 초과 기사 제외 */
     let items;
     try{ items=await viaRss2Json(feedUrl()); }
     catch(e){ items=await viaAllOrigins(feedUrl()); }
     items=items.filter(x=>x.t && !isNaN(x.d) && (Date.now()-x.d) < JN_MAX_AGE && isOnTopic(x.t)).slice(0,8);
     if(!items.length){
-      /* 실시간 검색엔 안 걸려도, 조사로 확인된 로보페이 등 관련 소식은 큐레이션으로 표시
-         (무관한 일반 파이 뉴스로는 절대 채우지 않음) */
-      renderJnList(JN_CURATED, true);
-      if(upd) upd.textContent='갱신: '+stamp()+' · 큐레이션(실시간 매칭 없음, 미확인 항목 포함)';
+      renderJnList([], false);
+      if(upd) upd.textContent='갱신: '+stamp()+' · 최근 30일 매칭 소식 없음';
     } else {
       renderJnList(items, false);
       if(upd) upd.textContent='갱신: '+stamp()+' · 로봇경제 특화(실시간)';
     }
   }catch(e){
-    renderJnList(JN_CURATED, true);
-    if(upd) upd.textContent='수집 실패 — 큐레이션 표시 중(미확인 항목 포함) · '+stamp();
+    renderJnList([], false);
+    if(upd) upd.textContent='수집 실패 · '+stamp();
   }finally{
     jnBusy=false;
     if(btn){btn.disabled=false;btn.textContent='↻ 갱신';}
